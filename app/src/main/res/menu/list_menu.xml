@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/navEdit"
+        android:title="Изменить"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/navCheckAll"
+        android:title="Отметить все"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/navResetAll"
+        android:title="Сбросить все"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/navDeleteChecked"
+        android:title="Удалить отмеченные"
+        app:showAsAction="never"/>
+</menu>

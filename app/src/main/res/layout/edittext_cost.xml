@@ -1,0 +1,14 @@
+<EditText style="@style/AutoHeight"
+    android:id="@+id/etCost"
+    android:layout_width="60dp"
+    android:inputType="numberDecimal"
+    android:gravity="center"
+    tools:text="54.3"
+    android:textSize="15sp"
+    android:layout_marginStart="10dp"
+    tools:ignore="LabelFor"
+    android:imeOptions="actionSend"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <requestFocus />
+</EditText>

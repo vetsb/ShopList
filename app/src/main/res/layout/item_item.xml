@@ -1,0 +1,154 @@
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:clickable="true">
+
+    <com.daimajia.swipe.SwipeLayout
+        style="@style/AutoHeight"
+        android:id="@+id/swipeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:id="@+id/controls">
+
+            <LinearLayout
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:id="@+id/layoutEdit"
+                android:clickable="true"
+                android:gravity="center"
+                android:focusable="true"
+                android:background="@color/colorPrimary">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="ContentDescription"
+                    android:src="@drawable/edit"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:id="@+id/layoutDelete"
+                android:clickable="true"
+                android:gravity="center"
+                android:focusable="true"
+                android:background="@color/red">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="ContentDescription"
+                    android:src="@drawable/delete"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:gravity="center_vertical"
+            android:focusable="true"
+            android:background="@drawable/item_background"
+            android:id="@+id/container">
+            <ImageView
+                android:id="@+id/ivCheck"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                tools:ignore="ContentDescription"
+                android:src="@drawable/check_unchecked"
+                android:layout_marginEnd="10dp"/>
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="#000000"
+                    tools:text="Сок"/>
+
+                <TextView
+                    android:id="@+id/tvCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="#8D8D8D"
+                    tools:text="1 литр"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvCost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="#515151"
+                tools:text="55 ₽"
+                android:layout_marginStart="10dp"/>
+
+            <EditText
+                android:id="@+id/etCost"
+                style="@style/EditText"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:gravity="center"
+                android:digits="0123456789."
+                android:inputType="numberDecimal"
+                android:textSize="15sp"
+                tools:text="100"
+                android:imeOptions="actionDone"
+                android:layout_marginStart="10dp"
+                tools:ignore="LabelFor" />
+
+            <LinearLayout
+                android:id="@+id/layoutCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <ImageButton
+                    android:id="@+id/btnMinus"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/minus"
+                    tools:ignore="ContentDescription" />
+
+                <EditText
+                    android:id="@+id/etCount"
+                    style="@style/EditText"
+                    android:layout_width="60dp"
+                    android:gravity="center"
+                    android:digits="0123456789"
+                    android:inputType="number"
+                    android:textSize="15sp"
+                    tools:text="1"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    tools:ignore="LabelFor" />
+
+                <ImageButton
+                    android:id="@+id/btnPlus"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/plus"
+                    tools:ignore="ContentDescription" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.daimajia.swipe.SwipeLayout>
+</LinearLayout>

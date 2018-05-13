@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "title": "Водка",
+      "category_id": 1
+    },
+    {
+      "title": "Коньяк",
+      "category_id": 1
+    },
+    {
+      "title": "Аспирин",
+      "category_id": 2
+    },
+    {
+      "title": "Анальгин",
+      "category_id": 2
+    },
+    {
+      "title": "Новый путь",
+      "category_id": 3
+    },
+    {
+      "title": "The New York Times",
+      "category_id": 3
+    }
+  ]
+}

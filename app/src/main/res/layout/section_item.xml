@@ -1,0 +1,23 @@
+<LinearLayout
+    style="@style/AutoHeight"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/AutoHeight"
+        android:background="#e1e1e1"
+        android:textColor="#000000"
+        tools:text="Название раздела"
+        android:textSize="14sp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:id="@+id/tvTitle"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
