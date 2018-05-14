@@ -26,9 +26,11 @@ import ru.dmitriylebyodkin.shoplist.App;
 import ru.dmitriylebyodkin.shoplist.R;
 import ru.dmitriylebyodkin.shoplist.adapters.IListAdapter;
 import ru.dmitriylebyodkin.shoplist.models.ListModel;
+import ru.dmitriylebyodkin.shoplist.models.ProductModel;
 import ru.dmitriylebyodkin.shoplist.presenters.MainPresenter;
 import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
+import ru.dmitriylebyodkin.shoplist.room.data.Product;
 import ru.dmitriylebyodkin.shoplist.views.MainView;
 
 public class MainActivity extends MvpAppCompatActivity implements MainView {
@@ -44,6 +46,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     private List<IListWithItems> listLists;
     private IListAdapter iListAdapter;
+    private List<Product> productList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,8 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
         ButterKnife.bind(this);
         App.initApp(this);
+
+        productList = ProductModel.getAll(this);
 
         presenter.init(this);
     }
@@ -127,7 +132,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     @Override
     public void setAdapter() {
-        iListAdapter = new IListAdapter(this, listLists);
+        iListAdapter = new IListAdapter(this, listLists, productList);
     }
 
     @Override
@@ -146,6 +151,11 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     @Override
     public void addAdapterItemToBegin(IListWithItems iListWithItems) {
         iListAdapter.addToBegin(iListWithItems);
+    }
+
+    @Override
+    public void setAdapterProducts(List<Product> productList) {
+        iListAdapter.setProducts(productList);
     }
 
     @Override
@@ -186,7 +196,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                             listLists = new ArrayList<>();
                             listLists.add(iListWithItems);
 
-                            iListAdapter = new IListAdapter(this, listLists);
+                            iListAdapter = new IListAdapter(this, listLists, ProductModel.getAll(this));
                             presenter.initList();
                         } else {
                             presenter.addAdapterItemToBegin(iListWithItems);
@@ -195,6 +205,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                     }
                 } else {
                     presenter.updateAdapterItem(position, iListWithItems);
+                    presenter.setProducts(ProductModel.getAll(this));
                 }
             }
 

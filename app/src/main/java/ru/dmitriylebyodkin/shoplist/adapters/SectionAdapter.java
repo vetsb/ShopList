@@ -26,6 +26,11 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.ViewHold
         this.sectionList = sectionList;
     }
 
+    public void setList(List<Section> list) {
+        this.sectionList = list;
+        notifyDataSetChanged();
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tvTitle)
         TextView tvTitle;
@@ -49,7 +54,12 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Section section = sectionList.get(position);
 
-        holder.tvTitle.setText(section.getTitle());
+        if (section.getTitle() == null || section.getTitle().trim().equalsIgnoreCase("")) {
+            holder.tvTitle.setText(R.string.without_category);
+        } else {
+            holder.tvTitle.setText(section.getTitle());
+        }
+
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
         holder.recyclerView.setHasFixedSize(true);
         holder.recyclerView.setAdapter(section.getAdapter());

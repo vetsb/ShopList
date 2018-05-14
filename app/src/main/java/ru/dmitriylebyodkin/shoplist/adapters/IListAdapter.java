@@ -14,9 +14,11 @@ import android.widget.TextView;
 import org.parceler.Parcels;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,15 +31,43 @@ import ru.dmitriylebyodkin.shoplist.room.dao.ProductDao;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
 import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
+import ru.dmitriylebyodkin.shoplist.room.data.Product;
 
 public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> {
     private static final String TAG = "myLogs";
     private Context context;
     private List<IListWithItems> data;
+    private List<Product> productList;
 
-    public IListAdapter(Context context, List<IListWithItems> data) {
+    public IListAdapter(Context context, List<IListWithItems> data, List<Product> productList) {
         this.context = context;
         this.data = data;
+        this.productList = productList;
+
+//        if (productList == null) {
+//            this.productList = new ArrayList<>();
+//        } else {
+//            this.productList = productList;
+//        }
+//
+//        Product product;
+//        List<Integer> productIds = new ArrayList<>();
+//
+//        for (IListWithItems list: data) {
+//            for (IItem item: list.getItems()) {
+//                if (productIds.indexOf(item.getProductId()) == -1) {
+//                    productIds.add(item.getProductId());
+//                }
+//            }
+//        }
+//
+//        for (Iterator<Product> iterator = productList.iterator(); iterator.hasNext();) {
+//            product = iterator.next();
+//
+//            if (productIds.indexOf(product.getId()) == -1) {
+//                iterator.remove();
+//            }
+//        }
     }
 
     public List<IListWithItems> getData() {
@@ -66,6 +96,11 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
         data.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, getItemCount()-1);
+    }
+
+    public void setProducts(List<Product> products) {
+        this.productList = products;
+        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -103,6 +138,7 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
         holder.container.setOnClickListener(v -> {
             Intent intent = new Intent(context, InfoActivity.class);
             intent.putExtra("list", Parcels.wrap(listWithItems));
+//            intent.putExtra("products", Parcels.wrap(productList));
             intent.putExtra("position", position);
             ((MainActivity) context).startActivityForResult(intent, MainActivity.LIST_ACTIVITY_CODE);
         });
@@ -120,7 +156,6 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
             holder.tvItems.setText(R.string.no_products);
         } else {
             StringBuilder items = new StringBuilder();
-            ProductDao productDao = RoomDb.getInstance(context).getProductDao();
 
             int size = itemList.size();
 
@@ -133,15 +168,11 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
             for (int i = 0; i < size; i++) {
                 IItem item = itemList.get(i);
 
-                items.append(productDao.getById(item.getProductId()).getTitle());
-
-//                if (itemList.size() == 11) {
-//                    if (i != size-1) {
-//                        items.append("\n");
-//                    }
-//                } else {
-//                    items.append("\n");
-//                }
+                for (Product product: productList) {
+                    if (product.getId() == item.getProductId()) {
+                        items.append(product.getTitle());
+                    }
+                }
 
                 if (i != size-1) {
                     items.append("\n");

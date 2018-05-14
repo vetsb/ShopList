@@ -34,6 +34,7 @@ import ru.dmitriylebyodkin.shoplist.activities.InfoActivity;
 import ru.dmitriylebyodkin.shoplist.models.ItemModel;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
+import ru.dmitriylebyodkin.shoplist.views.InfoView;
 
 public class IItemAdapter extends RecyclerView.Adapter<IItemAdapter.ViewHolder> {
     private static final String TAG = "myLogs";
@@ -110,18 +111,18 @@ public class IItemAdapter extends RecyclerView.Adapter<IItemAdapter.ViewHolder> 
         }
     }
 
-    public void updateItem(int position, IItem item) {
+    public void addProduct(Product product) {
+        listProducts.add(product);
+        notifyDataSetChanged();
+    }
+
+    public void setItem(int position, IItem item) {
         listItems.set(position, item);
         notifyItemChanged(position);
     }
 
-    public void updateProduct(int position, Product product) {
+    public void setProduct(int position, Product product) {
         listProducts.set(position, product);
-        notifyDataSetChanged();
-    }
-
-    public void addProduct(Product product) {
-        listProducts.add(product);
         notifyDataSetChanged();
     }
 
@@ -234,6 +235,7 @@ public class IItemAdapter extends RecyclerView.Adapter<IItemAdapter.ViewHolder> 
                 }
 
                 notifyItemChanged(position);
+                ((InfoView) context).updateSummary();
 
                 return true;
             }
@@ -262,7 +264,7 @@ public class IItemAdapter extends RecyclerView.Adapter<IItemAdapter.ViewHolder> 
             notifyItemRangeChanged(position, getItemCount()-1);
             Toast.makeText(context, "Удалено", Toast.LENGTH_LONG).show();
 
-            ((InfoActivity) context).updateSummary();
+            ((InfoView) context).updateSummary();
         });
 
         if (positionOpened == position) {

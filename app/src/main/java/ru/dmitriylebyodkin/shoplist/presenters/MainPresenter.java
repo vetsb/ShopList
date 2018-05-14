@@ -16,6 +16,7 @@ import ru.dmitriylebyodkin.shoplist.models.ListModel;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
 import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
+import ru.dmitriylebyodkin.shoplist.room.data.Product;
 import ru.dmitriylebyodkin.shoplist.views.MainView;
 
 @InjectViewState
@@ -114,5 +115,9 @@ public class MainPresenter extends MvpPresenter<MainView> {
 
     public void removeAdapterItem(int position) {
         getViewState().removeAdapterItem(position);
+    }
+
+    public void setProducts(List<Product> productList) {
+        getViewState().setAdapterProducts(productList);
     }
 }

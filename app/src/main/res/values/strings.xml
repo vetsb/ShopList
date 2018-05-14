@@ -44,4 +44,5 @@
     <string name="new_list">Новый список</string>
     <string name="spent">Потрачено:</string>
     <string name="left">Осталось:</string>
+    <string name="without_category">Без категории</string>
 </resources>

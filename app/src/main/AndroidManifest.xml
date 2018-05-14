@@ -42,9 +42,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.AddShopActivity"
+            android:screenOrientation="portrait"
             android:label="@string/add_shop_activity_title"/>
         <activity
             android:name=".activities.MapActivity"
+            android:screenOrientation="portrait"
             android:label="@string/map" />
 
         <meta-data

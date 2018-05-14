@@ -1,35 +1,53 @@
 package ru.dmitriylebyodkin.shoplist.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ru.dmitriylebyodkin.shoplist.App;
 import ru.dmitriylebyodkin.shoplist.R;
-import ru.dmitriylebyodkin.shoplist.fragments.AddShopFragment;
-import ru.dmitriylebyodkin.shoplist.fragments.ListFragment;
+import ru.dmitriylebyodkin.shoplist.adapters.IItemAdapter;
+import ru.dmitriylebyodkin.shoplist.adapters.SectionAdapter;
+import ru.dmitriylebyodkin.shoplist.data.Section;
+import ru.dmitriylebyodkin.shoplist.models.CategoryModel;
 import ru.dmitriylebyodkin.shoplist.models.ListModel;
+import ru.dmitriylebyodkin.shoplist.models.ProductModel;
 import ru.dmitriylebyodkin.shoplist.presenters.InfoPresenter;
+import ru.dmitriylebyodkin.shoplist.room.data.Category;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
@@ -42,14 +60,22 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
 
     private static final int EDIT_LIST_CODE = 1;
     public static final int EDIT_ITEM_CODE = 2;
-    public static final int MAP_CODE = 3;
-    private static final int ADD_SHOP_CODE = 4;
+    private static final int ADD_SHOP_CODE = 3;
 
     @InjectPresenter
     InfoPresenter presenter;
 
-    @BindView(R.id.container)
-    FrameLayout container;
+    @BindView(R.id.etSearch)
+    AutoCompleteTextView etSearch;
+    @BindView(R.id.ivSearch)
+    ImageView ivSearch;
+    @BindView(R.id.ivClear)
+    ImageView ivClear;
+    @BindView(R.id.ivAdd)
+    ImageView ivAdd;
+
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
 
     @BindView(R.id.layoutSummary)
     FrameLayout layoutSummary;
@@ -67,9 +93,12 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
 
     private Intent intent;
     private IListWithItems list;
-    private ListFragment listFragment;
-    private AddShopFragment addShopFragment;
-    private FragmentManager fragmentManager;
+    private IItemAdapter adapter;
+    private SectionAdapter sectionAdapter;
+    private List<Integer> productIds;
+    private List<Product> productList = new ArrayList<>();
+    private List<String> products;
+    private ArrayAdapter searchAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,27 +109,72 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
         intent = getIntent();
         list = Parcels.unwrap(intent.getParcelableExtra("list"));
         setTitle(list.getList().getTitle());
-//
-//        Log.d(TAG, "onCreate: " + list.getItems());
-//
-//        Collections.reverse(list.getItems());
-//
-//        Log.d(TAG, "onCreate: " + list.getItems());
 
-        listFragment = new ListFragment();
-        listFragment.setList(list);
 
-        addShopFragment = new AddShopFragment();
-        addShopFragment.setList(list);
 
-        updateSummary();
+        productIds = new ArrayList<>();
+        for (IItem item: list.getItems()) {
+            productIds.add(item.getProductId());
+        }
 
-        fragmentManager = getSupportFragmentManager();
+//        productList = Parcels.unwrap(intent.getParcelableExtra("products"));
+        productList = ProductModel.getAll(this);
+        products = new ArrayList<>();
+
+        if (productList != null) {
+            for (Iterator<Product> iterator = productList.iterator(); iterator.hasNext(); ) {
+                Product product = iterator.next();
+
+                if (productIds.indexOf(product.getId()) == -1) {
+                    products.add(product.getTitle());
+                } else {
+                    iterator.remove();
+                }
+            }
+        }
+
+        searchAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, products);
+
+        etSearch.setAdapter(searchAdapter);
+        etSearch.setOnItemClickListener((parent, view, position, id) -> {
+            int index = products.indexOf(etSearch.getText().toString());
+            presenter.addItem(this, list.getList(), productList.get(index));
+
+            recyclerView.scrollToPosition(0);
+        });
+        etSearch.setOnEditorActionListener((v, actionId, event) -> {
+            if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && etSearch.getText().toString().trim().length() > 0) {
+                int index = App.indexOfIgnoreCase(products, etSearch.getText().toString());
+
+                if (index == -1) {
+                    presenter.addItem(this, list.getList(), etSearch.getText().toString());
+                } else {
+                    presenter.addItem(this, list.getList(), productList.get(index));
+                }
+
+                recyclerView.scrollToPosition(0);
+                sortItems(list.getList().getSortingType());
+
+                return true;
+            }
+
+            return false;
+        });
+
+        RxTextView.textChangeEvents(etSearch)
+                .map(text -> text.text().toString())
+                .subscribe(text -> {
+                    if (text.length() > 0) {
+                        presenter.hideSearchIcon();
+                    } else {
+                        presenter.showSearchIcon();
+                    }
+                });
 
         bottomNavigation.setMode(BottomNavigationBar.MODE_FIXED);
         bottomNavigation.setAutoHideEnabled(false);
         bottomNavigation
-                .addItem(new BottomNavigationItem(R.drawable.list, R.string.list)
+                .addItem(new BottomNavigationItem(R.drawable.list, R.string.sorting)
                         .setActiveColorResource(R.color.colorPrimary)
                         .setInActiveColorResource(R.color.navigation_gray))
                 .addItem(new BottomNavigationItem(R.drawable.gps_blue, R.string.shop)
@@ -111,23 +185,10 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
                         .setInActiveColorResource(R.color.navigation_gray))
                 .initialise();
 
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, listFragment)
-                .commit();
-
         bottomNavigation.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
             @Override
             public void onTabSelected(int position) {
-                Fragment fragment;
-                String title;
-
                 switch (position) {
-                    default:
-                    case 0:
-                        fragment = listFragment;
-                        title = list.getList().getTitle();
-                        presenter.replaceFragment(fragment, title);
-                        break;
                     case 1:
                         Intent addShopIntent = new Intent(getApplicationContext(), AddShopActivity.class);
                         addShopIntent.putExtras(intent);
@@ -148,60 +209,60 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
 
             @Override
             public void onTabReselected(int position) {
-//                if (position == 0) {
-//                    View bottomDialogView = getLayoutInflater().inflate(R.layout.bottom_dialog, null, false);
-//
-//                    TextView tvSortByAlphabet = bottomDialogView.findViewById(R.id.tvSortByAlphabet);
-//                    TextView tvSortByCategory = bottomDialogView.findViewById(R.id.tvSortByCategory);
-//                    TextView tvSortAdd = bottomDialogView.findViewById(R.id.tvSortByAdd);
-//
-//                    switch (list.getList().getSortingType()) {
-//                        case 0:
-//                            tvSortByAlphabet.setTextColor(getResources().getColor(R.color.colorPrimary));
-//                            break;
-//                        case 1:
-//                            tvSortByCategory.setTextColor(getResources().getColor(R.color.colorPrimary));
-//                            break;
-//                        case 2:
-//                            tvSortAdd.setTextColor(getResources().getColor(R.color.colorPrimary));
-//                            break;
-//                    }
-//
-//                    BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(InfoActivity.this);
-//                    bottomSheetDialog.setContentView(bottomDialogView);
-//                    bottomSheetDialog.show();
-//
-//                    tvSortByAlphabet.setOnClickListener(v -> {
-//                        setSort(v, 0);
-//
-//                        tvSortByCategory.setTextColor(Color.parseColor("#5F5F5F"));
-//                        tvSortAdd.setTextColor(Color.parseColor("#5F5F5F"));
-//
-//                        bottomSheetDialog.dismiss();
-//                    });
-//
-//                    tvSortByCategory.setOnClickListener(v -> {
-//                        setSort(v, 1);
-//
-//                        tvSortByAlphabet.setTextColor(Color.parseColor("#5F5F5F"));
-//                        tvSortAdd.setTextColor(Color.parseColor("#5F5F5F"));
-//
-//                        bottomSheetDialog.dismiss();
-//                    });
-//
-//                    tvSortAdd.setOnClickListener(v -> {
-//                        setSort(v, 2);
-//
-//                        tvSortByAlphabet.setTextColor(Color.parseColor("#5F5F5F"));
-//                        tvSortByCategory.setTextColor(Color.parseColor("#5F5F5F"));
-//
-//                        bottomSheetDialog.dismiss();
-//                    });
-//                }
+                if (position == 0) {
+                    View bottomDialogView = getLayoutInflater().inflate(R.layout.bottom_dialog, null, false);
+
+                    TextView tvSortByAlphabet = bottomDialogView.findViewById(R.id.tvSortByAlphabet);
+                    TextView tvSortByCategory = bottomDialogView.findViewById(R.id.tvSortByCategory);
+                    TextView tvSortAdd = bottomDialogView.findViewById(R.id.tvSortByAdd);
+
+                    switch (list.getList().getSortingType()) {
+                        case 0:
+                            tvSortByAlphabet.setTextColor(getResources().getColor(R.color.colorPrimary));
+                            break;
+                        case 1:
+                            tvSortByCategory.setTextColor(getResources().getColor(R.color.colorPrimary));
+                            break;
+                        case 2:
+                            tvSortAdd.setTextColor(getResources().getColor(R.color.colorPrimary));
+                            break;
+                    }
+
+                    BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(InfoActivity.this);
+                    bottomSheetDialog.setContentView(bottomDialogView);
+                    bottomSheetDialog.show();
+
+                    tvSortByAlphabet.setOnClickListener(v -> {
+                        setSort(v, 0);
+
+                        tvSortByCategory.setTextColor(Color.parseColor("#5F5F5F"));
+                        tvSortAdd.setTextColor(Color.parseColor("#5F5F5F"));
+
+                        bottomSheetDialog.dismiss();
+                    });
+
+                    tvSortByCategory.setOnClickListener(v -> {
+                        setSort(v, 1);
+
+                        tvSortByAlphabet.setTextColor(Color.parseColor("#5F5F5F"));
+                        tvSortAdd.setTextColor(Color.parseColor("#5F5F5F"));
+
+                        bottomSheetDialog.dismiss();
+                    });
+
+                    tvSortAdd.setOnClickListener(v -> {
+                        setSort(v, 2);
+
+                        tvSortByAlphabet.setTextColor(Color.parseColor("#5F5F5F"));
+                        tvSortByCategory.setTextColor(Color.parseColor("#5F5F5F"));
+
+                        bottomSheetDialog.dismiss();
+                    });
+                }
             }
 
             void setSort(View v, int sortingType) {
-                listFragment.sortItems(sortingType);
+                sortItems(sortingType);
 
                 list.getList().setSortingType(sortingType);
                 ListModel.update(InfoActivity.this, list.getList());
@@ -211,9 +272,12 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
         });
 
         ActionBar actionBar = getSupportActionBar();
+
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        presenter.init(list);
     }
 
     @Override
@@ -225,7 +289,7 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
 
     @Override
     public void onBackPressed() {
-        list.setItems(listFragment.getItems());
+        list.setItems(adapter.getItems());
         intent.putExtra("list", Parcels.wrap(list));
         setResult(RESULT_OK, intent);
         finish();
@@ -238,34 +302,107 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
     }
 
     @Override
-    public void setActivityTitle(String title) {
-        setTitle(title);
+    public void initItemAdapter() {
+        adapter = new IItemAdapter(this, list.getItems(), ProductModel.getAll(this), list.getList().isCompleted());
+    }
+
+    @Override
+    public void initSectionAdapter() {
+        sectionAdapter = new SectionAdapter(this, new ArrayList<>());
+    }
+
+    @Override
+    public void initList() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+
+//        if (adapter != null) {
+//            recyclerView.setAdapter(adapter);
+//        }
+    }
+
+    @Override
+    public void addAdapterItem(IItem item) {
+        adapter.addItem(item);
+        presenter.updateSummary(list);
+    }
+
+    @Override
+    public void setAdapterItem(int position, IItem item) {
+        adapter.setItem(position, item);
+    }
+
+    @Override
+    public void addAdapterProduct(Product product) {
+        productIds.add(product.getId());
+        int index = products.indexOf(product.getTitle());
+
+        if (index != -1) {
+            products.remove(index);
+            productList.remove(index);
+
+            searchAdapter.clear();
+            searchAdapter.addAll(products);
+        }
+
+        adapter.addProduct(product);
+    }
+
+    @Override
+    public void showSearchIcon() {
+        ivClear.setVisibility(View.GONE);
+        ivAdd.setVisibility(View.GONE);
+        ivSearch.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideSearchIcon() {
+        ivClear.setVisibility(View.VISIBLE);
+        ivAdd.setVisibility(View.VISIBLE);
+        ivSearch.setVisibility(View.GONE);
+    }
+
+    @Override
+    @OnClick(R.id.ivClear)
+    public void clearSearch() {
+        etSearch.dismissDropDown();
+        etSearch.setText("");
     }
 
     @Override
     public void checkAll() {
-        listFragment.checkAll();
+        adapter.checkAll();
     }
 
     @Override
     public void resetAll() {
-        listFragment.resetAll();
+        adapter.resetAll();
     }
 
     @Override
     public void deleteChecked() {
-        listFragment.deleteChecked();
+        adapter.deleteChecked();
     }
 
-    @Override
-    public void replaceFragment(Fragment fragment, String title) {
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
-        setTitle(title);
+    @OnClick(R.id.ivAdd)
+    public void addSearchItem() {
+        int index = products.indexOf(etSearch.getText().toString());
+
+        if (index == -1) {
+            presenter.addItem(this, list.getList(), etSearch.getText().toString());
+        } else {
+            presenter.addItem(this, list.getList(), productList.get(index));
+        }
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+
+        etSearch.clearFocus();
     }
 
     @Override
     public void updateList(IListWithItems iListWithItems) {
-        listFragment.setList(iListWithItems);
+        this.list = iListWithItems;
     }
 
     @Override
@@ -300,8 +437,9 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
         if (requestCode == EDIT_LIST_CODE) {
             if (resultCode == RESULT_OK) {
                 list = Parcels.unwrap(data.getParcelableExtra("list"));
-                presenter.updateList(this, list);
-                intent.putExtra("list", Parcels.wrap(Parcels.unwrap(data.getParcelableExtra("list"))));
+                presenter.setActivityTitle(this, list.getList().getTitle());
+
+                intent.putExtra("list", Parcels.wrap(list));
             }
 
             if (resultCode == App.RESULT_DELETE) {
@@ -319,13 +457,15 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
                 Product product = Parcels.unwrap(data.getParcelableExtra("product"));
                 int productPosition = data.getIntExtra("product_position", -1);
 
-                listFragment.updateItem(position, item);
+                presenter.setAdapterItem(position, item);
 
                 if (productPosition != -1) {
-                    listFragment.updateProduct(productPosition, product);
+                    presenter.setAdapterProduct(productPosition, product);
                 }
 
-                updateSummary();
+                sortItems(list.getList().getSortingType());
+
+                presenter.updateSummary(list);
             }
         }
 
@@ -336,55 +476,73 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
         }
     }
 
+    @Override
     public void setShop(Shop shop) {
-        addShopFragment.setShop(shop);
         list.getList().setShopId(shop.getId());
-
-        ListModel.update(this, list.getList());
+        presenter.update(this, list.getList());
     }
 
-    public void updateSummary() {
-        List<IItem> itemList;
+    @Override
+    public void setActivityTitle(String title) {
+        setTitle(title);
+    }
 
-        float spentSum = 0;
-        int spentCount = 0;
-        float leftSum = 0;
-        int leftCount = 0;
-
-        if (listFragment.getItems() == null) {
-            itemList = list.getItems();
-        } else {
-            itemList = listFragment.getItems();
-        }
-
-        for (IItem item: itemList) {
-            if (item.isBought()) {
-                spentSum += item.getCost();
-                spentCount++;
-            } else {
-                leftSum += item.getCost();
-                leftCount++;
-            }
-        }
-
-        String finalSpentSum, finalLeftSum;
-
-        if (spentSum - (int) spentSum == 0) {
-            finalSpentSum = String.valueOf((int) spentSum);
-        } else {
-            finalSpentSum = String.valueOf(leftSum);
-        }
-
-        if (leftSum - (int) leftSum == 0) {
-            finalLeftSum = String.valueOf((int) leftSum);
-        } else {
-            finalLeftSum = String.valueOf(leftSum);
-        }
-
+    @Override
+    public void setSummarySpent(String finalSpentSum, int spentCount) {
         tvSpent.setText(finalSpentSum + " \u20BD");
-        tvLeft.setText(finalLeftSum + " \u20BD");
-
         tvSpentCount.setText("("+String.valueOf(spentCount)+")");
+    }
+
+    @Override
+    public void setSummaryLeft(String finalLeftSum, int leftCount) {
+        tvLeft.setText(finalLeftSum + " \u20BD");
         tvLeftCount.setText("("+String.valueOf(leftCount)+")");
+    }
+
+    @Override
+    public void updateSummary() {
+        presenter.updateSummary(list);
+    }
+
+    @Override
+    public void setAdapterItems(List<IItem> itemList) {
+        adapter.setItems(itemList);
+    }
+
+    @Override
+    public void setItemAdapter() {
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void setSectionAdapter() {
+        recyclerView.setAdapter(sectionAdapter);
+    }
+
+    @Override
+    public void setSectionList(List<Section> sectionList) {
+        sectionAdapter.setList(sectionList);
+    }
+
+    @Override
+    public void setAdapterProduct(int position, Product product) {
+        adapter.setProduct(position, product);
+    }
+
+    @Override
+    public void sortItems(int sortingType) {
+        switch (sortingType) {
+            case 0:
+                presenter.sortByAlphabet(list.getItems(), ProductModel.getAll(this));
+                break;
+            case 1:
+                presenter.sortByCategory(this, list.getItems(), ProductModel.getAll(this), CategoryModel.getAll(this));
+                break;
+            case 2:
+                presenter.sortByAdd(list.getItems());
+                break;
+        }
+
+        list.getList().setSortingType(sortingType);
     }
 }

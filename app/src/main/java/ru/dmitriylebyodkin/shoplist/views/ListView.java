@@ -34,5 +34,5 @@ public interface ListView extends MvpView {
 
     void deleteChecked();
 
-    void setActivityTitle(String title);
+//    void setActivityTitle(String title);
 }

@@ -68,14 +68,4 @@ public class ListPresenter extends MvpPresenter<ListView> {
 
         addItem(context, list, product);
     }
-
-    public void updateList(IListWithItems iListWithItems) {
-        IList iList = iListWithItems.getList();
-
-        if (iList != null) {
-            getViewState().setActivityTitle(iList.getTitle());
-        }
-
-        getViewState().updateList(iListWithItems);
-    }
 }
