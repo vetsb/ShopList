@@ -15,15 +15,11 @@ public class IItem {
     private int id;
     private int productId;
     private int listId;
-    private int shopId;
     private int count;
     private float cost;
     private String note;
     private boolean isBought = false;
     private boolean isFinished = false;
-//    private double latitude;
-//    private double longitude;
-//    private double altitude;
 
     public int getId() {
         return id;
@@ -47,14 +43,6 @@ public class IItem {
 
     public void setListId(int listId) {
         this.listId = listId;
-    }
-
-    public int getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(int shopId) {
-        this.shopId = shopId;
     }
 
     public int getCount() {

@@ -2,7 +2,6 @@ package ru.dmitriylebyodkin.shoplist.presenters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -14,8 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import ru.dmitriylebyodkin.shoplist.models.ListModel;
-import ru.dmitriylebyodkin.shoplist.room.RoomDb;
-import ru.dmitriylebyodkin.shoplist.room.dao.IListDao;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
 import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
@@ -27,9 +24,7 @@ public class MainPresenter extends MvpPresenter<MainView> {
     private static final String TAG = "myLogs";
 
     public void init(Context context) {
-        IListDao iListDao = RoomDb.getInstance(context).getIListDao();
-
-        List<IListWithItems> list = iListDao.getWithItems();
+        List<IListWithItems> list = ListModel.getWithItems(context); // iListDao.getWithItems()
         List<IItem> itemList;
 
         if (list == null || list.size() == 0) {
@@ -37,7 +32,6 @@ public class MainPresenter extends MvpPresenter<MainView> {
         } else {
             for (int i = 0; i < list.size(); i++) {
                 itemList = list.get(i).getItems();
-
                 Collections.reverse(itemList);
 
                 for (Iterator<IItem> iterator = itemList.iterator(); iterator.hasNext();) {

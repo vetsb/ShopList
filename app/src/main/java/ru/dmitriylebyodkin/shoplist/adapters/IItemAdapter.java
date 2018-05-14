@@ -23,6 +23,7 @@ import com.daimajia.swipe.SwipeLayout;
 
 import org.parceler.Parcels;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;

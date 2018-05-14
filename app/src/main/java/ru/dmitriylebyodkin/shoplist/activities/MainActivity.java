@@ -3,7 +3,6 @@ package ru.dmitriylebyodkin.shoplist.activities;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -26,8 +25,8 @@ import butterknife.OnClick;
 import ru.dmitriylebyodkin.shoplist.App;
 import ru.dmitriylebyodkin.shoplist.R;
 import ru.dmitriylebyodkin.shoplist.adapters.IListAdapter;
+import ru.dmitriylebyodkin.shoplist.models.ListModel;
 import ru.dmitriylebyodkin.shoplist.presenters.MainPresenter;
-import ru.dmitriylebyodkin.shoplist.room.RoomDb;
 import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
 import ru.dmitriylebyodkin.shoplist.views.MainView;
@@ -88,7 +87,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
         timestampTo = (int) (calendar.getTimeInMillis()/1000L);
 
-        int count = RoomDb.getInstance(getApplicationContext()).getIListDao().getCountByTimeRange(timestampFrom, timestampTo);
+        int count = ListModel.getCountByTimeRange(this, timestampFrom, timestampTo);
 
         if (count != 0) {
             etTitle.append(" " + String.valueOf(count+1));

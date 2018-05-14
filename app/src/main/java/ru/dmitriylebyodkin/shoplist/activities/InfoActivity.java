@@ -19,6 +19,7 @@ import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 
 import org.parceler.Parcels;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -79,6 +80,12 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
         intent = getIntent();
         list = Parcels.unwrap(intent.getParcelableExtra("list"));
         setTitle(list.getList().getTitle());
+//
+//        Log.d(TAG, "onCreate: " + list.getItems());
+//
+//        Collections.reverse(list.getItems());
+//
+//        Log.d(TAG, "onCreate: " + list.getItems());
 
         listFragment = new ListFragment();
         listFragment.setList(list);
@@ -258,7 +265,7 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
 
     @Override
     public void updateList(IListWithItems iListWithItems) {
-        listFragment.updateList(iListWithItems);
+        listFragment.setList(iListWithItems);
     }
 
     @Override

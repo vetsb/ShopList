@@ -118,8 +118,6 @@ public class ListFragment extends MvpAppCompatFragment implements ListView {
             if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && etSearch.getText().toString().trim().length() > 0) {
                 int index = App.indexOfIgnoreCase(products, etSearch.getText().toString());
 
-                Log.d(TAG, "onCreateView: " + index);
-
                 if (index == -1) {
                     presenter.addItem(getActivity(), list.getList(), etSearch.getText().toString());
                 } else {
@@ -222,6 +220,11 @@ public class ListFragment extends MvpAppCompatFragment implements ListView {
         sortItems(list.getList().getSortingType()); // list.getList().getSortingType()
     }
 
+    @Override
+    public void updateList(IListWithItems iListWithItems) {
+        this.list = iListWithItems;
+    }
+
     public void groupListByCategory(List<IItem> itemList, List<Product> productList, List<Category> categoryList) {
         Map<Integer, List<IItem>> map = new HashMap<>();
         int categoryId = 0;
@@ -264,10 +267,10 @@ public class ListFragment extends MvpAppCompatFragment implements ListView {
         this.sectionList = sectionList;
     }
 
-    @Override
-    public void updateList(IListWithItems iListWithItems) {
-        list = iListWithItems;
-    }
+//    @Override
+//    public void updateList(IListWithItems iListWithItems) {
+//        list = iListWithItems;
+//    }
 
     @Override
     public void initList() {
@@ -315,8 +318,8 @@ public class ListFragment extends MvpAppCompatFragment implements ListView {
         adapter.updateProduct(productPosition, product);
     }
 
-    public void setList(IListWithItems list) {
-        this.list = list;
+    public void setList(IListWithItems iListWithItems) {
+        this.list = iListWithItems;
     }
 
     public void sortByAlphabet() {
@@ -360,7 +363,7 @@ public class ListFragment extends MvpAppCompatFragment implements ListView {
     public void sortByAdd() {
         List<IItem> itemList = adapter.getItems();
 
-        Collections.sort(itemList, (item1, item2) -> Integer.compare(item1.getId(), item2.getId()));
+        Collections.sort(itemList, (item1, item2) -> Integer.compare(item2.getId(), item1.getId()));
 
         adapter.setItems(itemList);
 
