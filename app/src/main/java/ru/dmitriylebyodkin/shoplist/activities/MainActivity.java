@@ -1,9 +1,11 @@
 package ru.dmitriylebyodkin.shoplist.activities;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -123,6 +125,13 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                 .create();
 
         alertDialog.show();
+
+        etTitle.requestFocus();
+
+        InputMethodManager imm = (InputMethodManager)   getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
     }
 
     @Override
