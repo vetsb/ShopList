@@ -463,6 +463,13 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
                     presenter.setAdapterProduct(productPosition, product);
                 }
 
+                int updatedTimestamp = data.getIntExtra("updated_timestamp", 0);
+
+                if (updatedTimestamp != 0) {
+                    list.getList().setUpdatedAt(updatedTimestamp);
+                    intent.putExtra("list", Parcels.wrap(list));
+                }
+
                 sortItems(list.getList().getSortingType());
 
                 presenter.updateSummary(list);
@@ -480,6 +487,12 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
     public void setShop(Shop shop) {
         list.getList().setShopId(shop.getId());
         presenter.update(this, list.getList());
+    }
+
+    @Override
+    public void setUpdatedTimestamp(int timestamp) {
+        list.getList().setUpdatedAt(timestamp);
+        intent.putExtra("list", Parcels.wrap(list));
     }
 
     @Override

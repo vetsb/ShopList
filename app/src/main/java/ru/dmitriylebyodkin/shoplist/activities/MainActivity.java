@@ -1,9 +1,17 @@
 package ru.dmitriylebyodkin.shoplist.activities;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -29,6 +37,7 @@ import ru.dmitriylebyodkin.shoplist.R;
 import ru.dmitriylebyodkin.shoplist.adapters.IListAdapter;
 import ru.dmitriylebyodkin.shoplist.models.ListModel;
 import ru.dmitriylebyodkin.shoplist.models.ProductModel;
+import ru.dmitriylebyodkin.shoplist.notifications.TimeNotification;
 import ru.dmitriylebyodkin.shoplist.presenters.MainPresenter;
 import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
@@ -59,6 +68,20 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         App.initApp(this);
 
         productList = ProductModel.getAll(this);
+
+//        IListWithItems iListWithItems = ListModel.getWithItems(this).get(0);
+//
+//        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        Intent alarmIntent = new Intent(this, TimeNotification.class);
+//        alarmIntent.putExtra("list", Parcels.wrap(iListWithItems));
+//
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+//        am.cancel(pendingIntent);
+//        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+15000, pendingIntent);
+
+        /*
+        Сделать обновление updatedAt при изменении списка
+         */
 
         presenter.init(this);
     }

@@ -32,6 +32,7 @@ import ru.dmitriylebyodkin.shoplist.R;
 import ru.dmitriylebyodkin.shoplist.activities.EditItemActivity;
 import ru.dmitriylebyodkin.shoplist.activities.InfoActivity;
 import ru.dmitriylebyodkin.shoplist.models.ItemModel;
+import ru.dmitriylebyodkin.shoplist.models.ListModel;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
 import ru.dmitriylebyodkin.shoplist.views.InfoView;
@@ -258,6 +259,9 @@ public class IItemAdapter extends RecyclerView.Adapter<IItemAdapter.ViewHolder> 
         });
 
         holder.layoutDelete.setOnClickListener(v -> {
+            int timestamp = (int) (System.currentTimeMillis()/1000L);
+
+            ListModel.updateUpdatedAtById(context, item.getListId(), timestamp);
             ItemModel.delete(context, item);
             listItems.remove(position);
             notifyItemRemoved(position);
@@ -265,6 +269,7 @@ public class IItemAdapter extends RecyclerView.Adapter<IItemAdapter.ViewHolder> 
             Toast.makeText(context, "Удалено", Toast.LENGTH_LONG).show();
 
             ((InfoView) context).updateSummary();
+            ((InfoView) context).setUpdatedTimestamp(timestamp);
         });
 
         if (positionOpened == position) {

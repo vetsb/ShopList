@@ -1,8 +1,11 @@
 package ru.dmitriylebyodkin.shoplist.activities;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -19,7 +22,6 @@ import org.parceler.Parcels;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,8 +29,8 @@ import ru.dmitriylebyodkin.shoplist.App;
 import ru.dmitriylebyodkin.shoplist.R;
 import ru.dmitriylebyodkin.shoplist.models.ListModel;
 import ru.dmitriylebyodkin.shoplist.models.ShopModel;
+import ru.dmitriylebyodkin.shoplist.notifications.TimeNotification;
 import ru.dmitriylebyodkin.shoplist.presenters.EditListPresenter;
-import ru.dmitriylebyodkin.shoplist.room.RoomDb;
 import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
 import ru.dmitriylebyodkin.shoplist.room.data.Shop;
@@ -38,6 +40,7 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
 
     private static final int ADD_SHOP_CODE = 1;
     private static final String TAG = "myLogs";
+    private static final int TIME_NOTIFICATION_CODE = 2;
     @InjectPresenter
     EditListPresenter presenter;
 
@@ -59,6 +62,7 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
     private boolean hasChanges = false;
     private IList list;
     private String title;
+    private int timestampNotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +76,10 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
         list = iListWithItems.getList();
 
         title = list.getTitle();
+        timestampNotification = list.getTimestampNotification();
 
         etTitle.setText(list.getTitle());
         etTitle.setSelection(list.getTitle().length());
-
         etTitle.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus && etTitle.getText().toString().trim().equals("")) {
                 etTitle.setText(title);
@@ -113,6 +117,9 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
             tvTime.setText(sdfTime.format(new Date(calendar.getTimeInMillis())));
         }
 
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
         tvDate.setOnClickListener(v -> {
             DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
                 calendar.set(Calendar.YEAR, year);
@@ -149,6 +156,24 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
             list.setTitle(etTitle.getText().toString().trim());
             iListWithItems.setList(list);
 
+            AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent alarmIntent = new Intent(this, TimeNotification.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            alarmIntent.putExtra("list", Parcels.wrap(iListWithItems));
+            alarmIntent.putExtra("title", iListWithItems.getList().getTitle());
+
+            Log.d(TAG, "onCreate: " + iListWithItems);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0); // FLAG_CANCEL_CURRENT, FLAG_UPDATE_CURRENT
+            am.cancel(pendingIntent);
+
+            if (list.getTimestampNotification() != 0 && list.getTimestampNotification() != timestampNotification) {
+                Log.d(TAG, "onBackPressed system: " + System.currentTimeMillis()/1000L);
+                Log.d(TAG, "onBackPressed list: " + list.getTimestampNotification());
+
+                am.set(AlarmManager.RTC_WAKEUP, list.getTimestampNotification()*1000L, pendingIntent);
+            }
+
+            list.setUpdatedAt((int) (System.currentTimeMillis()/1000L));
             ListModel.update(this, list);
 
             intent.putExtra("list", Parcels.wrap(iListWithItems));
@@ -162,7 +187,7 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
                     .setTitle(R.string.deleting)
                     .setMessage(R.string.deleting_message)
                     .setPositiveButton(R.string.yes, (dialog, which) -> {
-                        RoomDb.getInstance(getApplicationContext()).getIListDao().deleteById(list.getId());
+                        ListModel.deleteById(this, list.getId());
                         setResult(App.RESULT_DELETE, intent);
                         finish();
                     })
@@ -197,10 +222,24 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
                     .setTitle(R.string.saving_changes)
                     .setMessage("Вы хотите сохранить изменения?")
                     .setPositiveButton(R.string.yes, (dialog, which) -> {
-
-
+                        list.setUpdatedAt((int) (System.currentTimeMillis()/1000L));
                         ListModel.update(this, list);
+
                         intent.putExtra("list", Parcels.wrap(iListWithItems));
+
+                        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                        Intent alarmIntent = new Intent(this, TimeNotification.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        alarmIntent.putExtra("list", Parcels.wrap(iListWithItems));
+
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT); // FLAG_CANCEL_CURRENT
+                        am.cancel(pendingIntent);
+
+                        if (list.getTimestampNotification() != 0 && list.getTimestampNotification() != timestampNotification) {
+                            Log.d(TAG, "onBackPressed system: " + System.currentTimeMillis()/1000L);
+                            Log.d(TAG, "onBackPressed list: " + list.getTimestampNotification());
+
+                            am.set(AlarmManager.RTC_WAKEUP, list.getTimestampNotification()*1000L, pendingIntent);
+                        }
 
                         setResult(RESULT_OK, intent);
                         finish();

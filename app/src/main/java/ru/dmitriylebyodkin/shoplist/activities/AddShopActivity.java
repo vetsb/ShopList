@@ -282,6 +282,7 @@ public class AddShopActivity extends AppCompatActivity {
                 setResult(RESULT_CANCELED);
             } else {
                 iListWithItems.getList().setShopId(0);
+                iListWithItems.getList().setUpdatedAt((int) (System.currentTimeMillis()/1000L));
 
                 ListModel.update(this, iListWithItems.getList());
 
@@ -294,6 +295,7 @@ public class AddShopActivity extends AppCompatActivity {
                 setResult(RESULT_CANCELED);
             } else {
                 iListWithItems.getList().setShopId(selectedShop.getId());
+                iListWithItems.getList().setUpdatedAt((int) (System.currentTimeMillis()/1000L));
 
                 ListModel.update(this, iListWithItems.getList());
 

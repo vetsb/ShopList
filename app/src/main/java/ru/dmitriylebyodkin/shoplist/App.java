@@ -13,9 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import ru.dmitriylebyodkin.shoplist.room.RoomDb;
-import ru.dmitriylebyodkin.shoplist.room.dao.CategoryDao;
-import ru.dmitriylebyodkin.shoplist.room.dao.ProductDao;
+import ru.dmitriylebyodkin.shoplist.models.CategoryModel;
+import ru.dmitriylebyodkin.shoplist.models.ProductModel;
 import ru.dmitriylebyodkin.shoplist.room.data.Category;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
 
@@ -58,14 +57,13 @@ public class App extends Application {
         JSONObject jsonObject = new JSONObject(loadJSONFromAsset(context, "products"));
         JSONArray jsonArray = jsonObject.getJSONArray("items");
 
-        ProductDao productDao = RoomDb.getInstance(context).getProductDao();
         Product product;
 
         for (int i = 0; i < jsonArray.length(); i++) {
             product = new Product();
             product.setTitle(jsonArray.getJSONObject(i).getString("title"));
             product.setCategoryId(jsonArray.getJSONObject(i).getInt("category_id"));
-            productDao.insert(product);
+            ProductModel.insert(context, product);
         }
 
         SharedPreferences.Editor editor = sPref.edit();
@@ -77,13 +75,12 @@ public class App extends Application {
         JSONObject jsonObject = new JSONObject(loadJSONFromAsset(context, "categories"));
         JSONArray jsonArray = jsonObject.getJSONArray("items");
 
-        CategoryDao categoryDao = RoomDb.getInstance(context).getCategoryDao();
         Category category;
 
         for (int i = 0; i < jsonArray.length(); i++) {
             category = new Category();
             category.setTitle(jsonArray.getString(i));
-            categoryDao.insert(category);
+            CategoryModel.insert(context, category);
         }
 
         SharedPreferences.Editor editor = sPref.edit();

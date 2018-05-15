@@ -85,4 +85,6 @@ public interface InfoView extends MvpView {
     void setSectionList(List<Section> sectionList);
 
     void setShop(Shop shop);
+
+    void setUpdatedTimestamp(int timestamp);
 }

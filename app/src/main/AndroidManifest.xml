@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="ru.dmitriylebyodkin.shoplist">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -55,6 +56,14 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <receiver
+            android:name=".notifications.TimeNotification"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="ru.dmitriylebyodkin.create_notification_action" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

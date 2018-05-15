@@ -42,4 +42,7 @@ public interface IListDao {
 
     @Query("DELETE FROM IList WHERE id=:id")
     void deleteById(int id);
+
+    @Query("UPDATE IList SET updatedAt=:timestamp WHERE id=:id")
+    void updateUpdatedAtById(int id, int timestamp);
 }

@@ -2,7 +2,6 @@ package ru.dmitriylebyodkin.shoplist.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -21,16 +20,16 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.dmitriylebyodkin.shoplist.R;
+import ru.dmitriylebyodkin.shoplist.models.CategoryModel;
 import ru.dmitriylebyodkin.shoplist.models.ItemModel;
+import ru.dmitriylebyodkin.shoplist.models.ListModel;
 import ru.dmitriylebyodkin.shoplist.models.ProductModel;
 import ru.dmitriylebyodkin.shoplist.presenters.EditListPresenter;
-import ru.dmitriylebyodkin.shoplist.room.RoomDb;
 import ru.dmitriylebyodkin.shoplist.room.data.Category;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
@@ -103,7 +102,7 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditListVi
             Log.d(TAG, "onFocusChange: " + hasFocus);
         });
 
-        List<Category> categoryList = RoomDb.getInstance(this).getCategoryDao().getAll();
+        List<Category> categoryList = CategoryModel.getAll(this);
         List<String> categories = new ArrayList<>();
         int categoryIndex = 0;
         int index = 0;
@@ -224,18 +223,28 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditListVi
             product.setTitle(title);
         }
 
+        int updatedTimestamp = 0;
+
         if (item.getCount() != count || item.getCost() != cost || !item.getNote().equals(note)) {
+            updatedTimestamp = (int) (System.currentTimeMillis()/1000L);
+            ListModel.updateUpdatedAtById(this, item.getListId(), updatedTimestamp);
             ItemModel.update(this, item);
-//            RoomDb.getInstance(this).getIItemDao().update(item);
         }
 
         if (!product.getTitle().equals(title) || product.getCategoryId() != categoryId) {
+            if (updatedTimestamp == 0) {
+                updatedTimestamp = (int) (System.currentTimeMillis()/1000L);
+            }
+
+            ListModel.updateUpdatedAtById(this, item.getListId(), updatedTimestamp);
             ProductModel.update(this, product);
-//            RoomDb.getInstance(this).getProductDao().update(product);
         }
+
+        Log.d(TAG, "onBackPressed: " + updatedTimestamp);
 
         intent.putExtra("item", Parcels.wrap(item));
         intent.putExtra("product", Parcels.wrap(product));
+        intent.putExtra("updated_timestamp", updatedTimestamp);
 
         setResult(RESULT_OK, intent);
         finish();
