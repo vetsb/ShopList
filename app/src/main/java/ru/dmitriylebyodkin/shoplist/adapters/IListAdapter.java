@@ -88,8 +88,7 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
 
     public void addToBegin(IListWithItems iListWithItems) {
         data.add(0, iListWithItems);
-        notifyItemInserted(0);
-        notifyItemRangeChanged(0, getItemCount()+1);
+        notifyDataSetChanged();
     }
 
     public void removeItem(int position) {
@@ -152,36 +151,50 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
          * Товары
          */
         if (itemList == null || itemList.size() == 0) {
-//            holder.tvItems.setVisibility(View.GONE);
             holder.tvItems.setText(R.string.no_products);
         } else {
             StringBuilder items = new StringBuilder();
 
-            int size = itemList.size();
-
-            if (itemList.size() == 11) {
-                size = 11;
-            } else if (itemList.size() > 11) {
-                size = 10;
-            }
-
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < itemList.size(); i++) {
                 IItem item = itemList.get(i);
 
-                for (Product product: productList) {
+                for (Product product : productList) {
                     if (product.getId() == item.getProductId()) {
                         items.append(product.getTitle());
                     }
                 }
 
-                if (i != size-1) {
-                    items.append("\n");
+                if (i != itemList.size()-1) {
+                    items.append(", ");
                 }
             }
-
-            if (itemList.size() > 11) {
-                items.append("\n").append("+ ещё ").append(itemList.size() - size);
-            }
+//            StringBuilder items = new StringBuilder();
+//
+//            int size = itemList.size();
+//
+//            if (itemList.size() == 11) {
+//                size = 11;
+//            } else if (itemList.size() > 11) {
+//                size = 10;
+//            }
+//
+//            for (int i = 0; i < size; i++) {
+//                IItem item = itemList.get(i);
+//
+//                for (Product product: productList) {
+//                    if (product.getId() == item.getProductId()) {
+//                        items.append(product.getTitle());
+//                    }
+//                }
+//
+//                if (i != size-1) {
+//                    items.append("\n");
+//                }
+//            }
+//
+//            if (itemList.size() > 11) {
+//                items.append("\n").append("+ ещё ").append(itemList.size() - size);
+//            }
 
             holder.tvItems.setText(items);
         }
@@ -231,7 +244,7 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
         } else if (timestampToday - timestampUpdatedDay == 60*60*24*2) {
             updatedText += "позавчера ";
         } else {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH.mm");
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
             updatedText += sdf.format(new Date(timestampUpdatedDay*1000L));
         }

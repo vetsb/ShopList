@@ -52,48 +52,8 @@ public class MainPresenter extends MvpPresenter<MainView> {
         getViewState().initList();
     }
 
-    public void addList(Intent intent, int itemCount) {
-        IList iList = Parcels.unwrap(intent.getParcelableExtra("new_list"));
-        List<IItem> listItems = Parcels.unwrap(intent.getParcelableExtra("new_items"));
-
-        if (iList != null) {
-            IListWithItems iListWithItems = new IListWithItems();
-            iListWithItems.setItems(listItems);
-            iListWithItems.setList(iList);
-
-            if (intent.getBooleanExtra("edit", false)) {
-                int position = intent.getIntExtra("position", -1);
-
-                getViewState().updateAdapterItem(position, iListWithItems);
-            } else {
-                getViewState().addAdapterItemToBegin(iListWithItems);
-
-                if (itemCount == 1) {
-                    getViewState().hideLayoutNotItems();
-                }
-
-                getViewState().smoothScrollToBegin();
-            }
-        }
-    }
-
     public int createList(Context context, IList list) {
         return (int) ListModel.insert(context, list)[0];
-    }
-
-    public void updateList(Intent intent) {
-        if (intent.getBooleanExtra("has_changes", false)) {
-            int position = intent.getIntExtra("position", 0);
-
-            IList iList = Parcels.unwrap(intent.getParcelableExtra("list"));
-            List<IItem> listItems = Parcels.unwrap(intent.getParcelableExtra("new_items"));
-
-            IListWithItems newList = new IListWithItems();
-            newList.setList(iList);
-            newList.setItems(listItems);
-
-            getViewState().updateAdapterItem(position, newList);
-        }
     }
 
     public void smoothScrollToBegin() {

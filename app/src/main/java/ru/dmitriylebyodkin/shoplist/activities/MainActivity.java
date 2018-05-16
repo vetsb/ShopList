@@ -1,17 +1,12 @@
 package ru.dmitriylebyodkin.shoplist.activities;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -19,7 +14,6 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import org.parceler.Parcels;
 
@@ -37,7 +31,6 @@ import ru.dmitriylebyodkin.shoplist.R;
 import ru.dmitriylebyodkin.shoplist.adapters.IListAdapter;
 import ru.dmitriylebyodkin.shoplist.models.ListModel;
 import ru.dmitriylebyodkin.shoplist.models.ProductModel;
-import ru.dmitriylebyodkin.shoplist.notifications.TimeNotification;
 import ru.dmitriylebyodkin.shoplist.presenters.MainPresenter;
 import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
@@ -52,8 +45,8 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     @InjectPresenter
     MainPresenter presenter;
 
-    @BindView(R.id.scrollView)
-    DiscreteScrollView scrollView;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
 
     private List<IListWithItems> listLists;
     private IListAdapter iListAdapter;
@@ -79,14 +72,10 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 //        am.cancel(pendingIntent);
 //        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+15000, pendingIntent);
 
-        /*
-        Сделать обновление updatedAt при изменении списка
-         */
-
         presenter.init(this);
     }
 
-    @OnClick(R.id.btnNewList)
+    @OnClick(R.id.floatingActionButton)
     public void createList() {
         View view = getLayoutInflater().inflate(R.layout.dialog_create_list, null);
         final EditText etTitle = view.findViewById(R.id.etTitle);
@@ -171,8 +160,9 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     public void initList() {
 //        scrollView.setSlideOnFling(true);
 //        scrollView.setOffscreenItems(1);
-        scrollView.setItemTransitionTimeMillis(100);
-        scrollView.setAdapter(iListAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(iListAdapter);
     }
 
     @Override
@@ -198,7 +188,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     @Override
     public void smoothScrollToBegin() {
-        scrollView.scrollTo(0, 0);
+        recyclerView.smoothScrollToPosition(0);
     }
 
     @Override
@@ -219,22 +209,24 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                 IListWithItems iListWithItems = Parcels.unwrap(data.getParcelableExtra("list"));
 
                 if (position == -1) {
-                    if (data.getBooleanExtra("new_list", false)) {
-                        /**
-                         * Если нет ни одного элемента, создать список и положить туда первый элемент.
-                         * Иначе добавить в адаптер
-                         */
-                        if (listLists == null || listLists.size() == 0) {
-                            listLists = new ArrayList<>();
-                            listLists.add(iListWithItems);
-
-                            iListAdapter = new IListAdapter(this, listLists, ProductModel.getAll(this));
-                            presenter.initList();
-                        } else {
-                            presenter.addAdapterItemToBegin(iListWithItems);
-                            presenter.smoothScrollToBegin();
-                        }
-                    }
+                    /**
+                     * Если нет ни одного элемента, создать список и положить туда первый элемент.
+                     * Иначе добавить в адаптер
+                     */
+//                    if (listLists == null || listLists.size() == 0) {
+//                        Log.d(TAG, "onActivityResult: 1");
+//                        listLists = new ArrayList<>();
+//                        listLists.add(iListWithItems);
+//
+//                        iListAdapter = new IListAdapter(this, listLists, ProductModel.getAll(this));
+//                        presenter.initList();
+//                    } else {
+//                        Log.d(TAG, "onActivityResult: 2");
+//                        presenter.addAdapterItemToBegin(iListWithItems);
+//                        presenter.smoothScrollToBegin();
+//                    }
+                    presenter.addAdapterItemToBegin(iListWithItems);
+                    presenter.smoothScrollToBegin();
                 } else {
                     presenter.updateAdapterItem(position, iListWithItems);
                     presenter.setProducts(ProductModel.getAll(this));
