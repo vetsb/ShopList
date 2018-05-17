@@ -43,4 +43,8 @@ public class ListModel {
     public static void updateUpdatedAtById(Context context, int id, int timestamp) {
         getDao(context).updateUpdatedAtById(id, timestamp);
     }
+
+    public static List<IList> getByShopId(Context context, int shopId) {
+        return getDao(context).getByShopId(shopId);
+    }
 }

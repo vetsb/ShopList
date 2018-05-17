@@ -44,11 +44,13 @@ import ru.dmitriylebyodkin.shoplist.adapters.IItemAdapter;
 import ru.dmitriylebyodkin.shoplist.adapters.SectionAdapter;
 import ru.dmitriylebyodkin.shoplist.data.Section;
 import ru.dmitriylebyodkin.shoplist.models.CategoryModel;
+import ru.dmitriylebyodkin.shoplist.models.ItemModel;
 import ru.dmitriylebyodkin.shoplist.models.ListModel;
 import ru.dmitriylebyodkin.shoplist.models.ProductModel;
 import ru.dmitriylebyodkin.shoplist.presenters.InfoPresenter;
 import ru.dmitriylebyodkin.shoplist.room.data.Category;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
+import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
 import ru.dmitriylebyodkin.shoplist.room.data.Shop;
@@ -478,7 +480,61 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
 
         if (requestCode == ADD_SHOP_CODE && resultCode == App.RESULT_ADD) {
             IListWithItems newList = Parcels.unwrap(data.getParcelableExtra("list"));
-            list.getList().setShopId(newList.getList().getShopId());
+            int shopId = newList.getList().getShopId();
+
+            /**
+             * Если выбран новый магазин, то пройтись по всем элементам, которые покупались в том же магазине.
+             * Определить самую часто встречаемую стоимость и установить ее тем элементам текущего списка, у которых нет цены и которые еще не куплены.
+             */
+            if (shopId != 0 && shopId != list.getList().getShopId()) {
+                List<IList> listList = ListModel.getByShopId(this, shopId);
+                IItem iItem;
+                HashMap<Float, Integer> hash;
+
+                float maxCost; // самая часто встречаемая цена
+                int maxValue; // максимальное количество
+
+                for (IItem item: list.getItems()) {
+                    if (item.getCost() == 0 && !item.isBought()) {
+                        hash = new HashMap<>();
+
+                        for (IList iList: listList) {
+                            iItem = ItemModel.getByListAndProductIds(this, iList.getId(), item.getProductId());
+
+                            if (iItem != null && iItem.getCost() != 0) {
+                                if (hash.get(iItem.getCost()) == null) {
+                                    hash.put(iItem.getCost(), 1);
+                                } else {
+                                    hash.put(iItem.getCost(), hash.get(iItem.getCost())+1);
+                                }
+                            }
+                        }
+
+                        maxCost = 0;
+                        maxValue = 0;
+
+                        if (hash.size() == 0) {
+                            maxCost = 0;
+                        } else if (hash.size() == 1) {
+                            maxCost = item.getCost();
+                        } else {
+                            for (Map.Entry<Float, Integer> entry : hash.entrySet()) {
+                                if (entry.getValue() > maxValue) {
+                                    maxCost = entry.getKey();
+                                    maxValue = entry.getValue();
+                                }
+                            }
+                        }
+
+                        item.setCost(maxCost);
+                        ItemModel.update(this, item);
+                    }
+                }
+
+                list.getList().setShopId(shopId);
+            }
+
+            presenter.setAdapterItems(list.getItems());
             intent.putExtra("list", Parcels.wrap(list));
         }
     }

@@ -32,4 +32,7 @@ public interface IItemDao {
 
     @Query("DELETE FROM IItem WHERE listId=:listId AND productId=:productId")
     void deleteByListAndProductIds(int listId, int productId);
+
+    @Query("SELECT * FROM IItem WHERE listId=:listId AND productId=:productId ORDER BY id LIMIT 1")
+    IItem getByListAndProductIds(int listId, int productId);
 }

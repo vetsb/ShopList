@@ -45,4 +45,7 @@ public interface IListDao {
 
     @Query("UPDATE IList SET updatedAt=:timestamp WHERE id=:id")
     void updateUpdatedAtById(int id, int timestamp);
+
+    @Query("SELECT * FROM IList WHERE shopId=:shopId ORDER BY id")
+    List<IList> getByShopId(int shopId);
 }

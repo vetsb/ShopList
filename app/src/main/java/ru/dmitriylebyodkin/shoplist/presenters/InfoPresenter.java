@@ -257,4 +257,8 @@ public class InfoPresenter extends MvpPresenter<InfoView> {
 
         getViewState().setActivityTitle(title);
     }
+
+    public void setAdapterItems(List<IItem> items) {
+        getViewState().setAdapterItems(items);
+    }
 }
