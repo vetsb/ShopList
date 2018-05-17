@@ -176,7 +176,7 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
         bottomNavigation.setMode(BottomNavigationBar.MODE_FIXED);
         bottomNavigation.setAutoHideEnabled(false);
         bottomNavigation
-                .addItem(new BottomNavigationItem(R.drawable.list, R.string.sorting)
+                .addItem(new BottomNavigationItem(R.drawable.sort, R.string.sorting)
                         .setActiveColorResource(R.color.colorPrimary)
                         .setInActiveColorResource(R.color.navigation_gray))
                 .addItem(new BottomNavigationItem(R.drawable.gps_blue, R.string.shop)
@@ -202,7 +202,6 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
                         startActivityForResult(settingsIntent, EDIT_LIST_CODE);
                         break;
                 }
-
             }
 
             @Override

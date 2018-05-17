@@ -11,23 +11,18 @@ import ru.dmitriylebyodkin.shoplist.room.data.Product;
 
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface MainView extends MvpView {
-    void setList(List<IListWithItems> list);
 
-    void setAdapter();
-
-    void initList();
-
-    void updateAdapterItem(int position, IListWithItems iListWithItems);
-
-    void addAdapterItemToBegin(IListWithItems iListWithItems);
-
-    void setAdapterProducts(List<Product> productList);
-
-    void removeAdapterItem(int position);
+    void setActivityTitle(String title);
 
     void smoothScrollToBegin();
 
-    void showLayoutNotItems();
+    void setAdapter();
 
-    void hideLayoutNotItems();
+    void addAdapterItemToBegin(IListWithItems iListWithItems);
+
+    void updateAdapterItem(int position, IListWithItems iListWithItems);
+
+    void removeAdapterItem(int position);
+
+    void setAdapterProducts(List<Product> productList);
 }
