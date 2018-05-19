@@ -3,6 +3,7 @@ package ru.dmitriylebyodkin.shoplist.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -18,6 +19,7 @@ import butterknife.ButterKnife;
 import ru.dmitriylebyodkin.shoplist.App;
 import ru.dmitriylebyodkin.shoplist.fragments.ListsFragment;
 import ru.dmitriylebyodkin.shoplist.R;
+import ru.dmitriylebyodkin.shoplist.fragments.PatternsFragment;
 import ru.dmitriylebyodkin.shoplist.models.ProductModel;
 import ru.dmitriylebyodkin.shoplist.presenters.MainPresenter;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
@@ -36,6 +38,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     BottomNavigationBar bottomNavigation;
 
     private ListsFragment listsFragment;
+    private PatternsFragment patternsFragment;
     private FragmentManager fragmentManager;
     private String title;
 
@@ -59,6 +62,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                 .initialise();
 
         listsFragment = new ListsFragment();
+        patternsFragment = new PatternsFragment();
 
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -78,7 +82,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                     case 1:
                         title = getString(R.string.patterns);
                         fragmentManager.beginTransaction()
-                                .replace(R.id.frameLayout, listsFragment)
+                                .replace(R.id.frameLayout, patternsFragment)
                                 .commit();
                         break;
                 }
@@ -121,18 +125,6 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                      * Если нет ни одного элемента, создать список и положить туда первый элемент.
                      * Иначе добавить в адаптер
                      */
-//                    if (listLists == null || listLists.size() == 0) {
-//                        Log.d(TAG, "onActivityResult: 1");
-//                        listLists = new ArrayList<>();
-//                        listLists.add(iListWithItems);
-//
-//                        iListAdapter = new IListAdapter(this, listLists, ProductModel.getAll(this));
-//                        presenter.initList();
-//                    } else {
-//                        Log.d(TAG, "onActivityResult: 2");
-//                        presenter.addAdapterItemToBegin(iListWithItems);
-//                        presenter.smoothScrollToBegin();
-//                    }
                     presenter.addAdapterItemToBegin(iListWithItems);
                     presenter.smoothScrollToBegin();
                 } else {

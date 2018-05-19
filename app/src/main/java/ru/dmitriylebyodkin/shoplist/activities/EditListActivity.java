@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ import org.parceler.Parcels;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -95,6 +98,11 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
         }
 
         tvShop.setOnClickListener(view -> {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(etTitle.getWindowToken(), 0);
+
+            etTitle.clearFocus();
+
             Intent shopIntent = new Intent(this, AddShopActivity.class);
             shopIntent.putExtras(intent);
             startActivityForResult(shopIntent, ADD_SHOP_CODE);
@@ -156,20 +164,17 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
             list.setTitle(etTitle.getText().toString().trim());
             iListWithItems.setList(list);
 
-            AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Intent alarmIntent = new Intent(this, TimeNotification.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            alarmIntent.putExtra("list", Parcels.wrap(iListWithItems));
+            Intent alarmIntent = new Intent(this, TimeNotification.class);
+//                    .setAction("action 1")
+//                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             alarmIntent.putExtra("title", iListWithItems.getList().getTitle());
+            alarmIntent.putExtra("list", Parcels.wrap(iListWithItems));
 
-            Log.d(TAG, "onCreate: " + iListWithItems);
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0); // FLAG_CANCEL_CURRENT, FLAG_UPDATE_CURRENT
-            am.cancel(pendingIntent);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, TIME_NOTIFICATION_CODE, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT); // FLAG_CANCEL_CURRENT, FLAG_UPDATE_CURRENT
 
             if (list.getTimestampNotification() != 0 && list.getTimestampNotification() != timestampNotification) {
-                Log.d(TAG, "onBackPressed system: " + System.currentTimeMillis()/1000L);
-                Log.d(TAG, "onBackPressed list: " + list.getTimestampNotification());
-
+                AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 am.set(AlarmManager.RTC_WAKEUP, list.getTimestampNotification()*1000L, pendingIntent);
             }
 

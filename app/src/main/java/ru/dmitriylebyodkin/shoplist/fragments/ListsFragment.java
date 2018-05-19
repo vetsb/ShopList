@@ -8,11 +8,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
@@ -43,6 +45,7 @@ import ru.dmitriylebyodkin.shoplist.views.ListsView;
 
 public class ListsFragment extends MvpAppCompatFragment implements ListsView {
 
+    private static final String TAG = "myLogs";
     @InjectPresenter
     ListsPresenter presenter;
 
@@ -52,11 +55,12 @@ public class ListsFragment extends MvpAppCompatFragment implements ListsView {
     private List<IListWithItems> listLists;
     private IListAdapter iListAdapter;
     private List<Product> productList;
+    private LinearLayoutManager linearLayoutManager;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_lists, container, false);
         ButterKnife.bind(this, view);
 
         productList = ProductModel.getAll(getActivity());
@@ -121,7 +125,7 @@ public class ListsFragment extends MvpAppCompatFragment implements ListsView {
                     Intent intent = new Intent(getActivity(), InfoActivity.class);
                     intent.putExtra("list", Parcels.wrap(iListWithItems));
                     intent.putExtra("new_list", true);
-                    startActivityForResult(intent, MainActivity.LIST_ACTIVITY_CODE);
+                    getActivity().startActivityForResult(intent, MainActivity.LIST_ACTIVITY_CODE);
                 })
                 .setNeutralButton(R.string.cancel, null)
                 .create();
@@ -148,7 +152,8 @@ public class ListsFragment extends MvpAppCompatFragment implements ListsView {
 
     @Override
     public void initList() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(iListAdapter);
     }
@@ -177,6 +182,7 @@ public class ListsFragment extends MvpAppCompatFragment implements ListsView {
     @Override
     public void smoothScrollToBegin() {
         recyclerView.smoothScrollToPosition(0);
+        linearLayoutManager.scrollToPositionWithOffset(0, 0);
     }
 
     @Override

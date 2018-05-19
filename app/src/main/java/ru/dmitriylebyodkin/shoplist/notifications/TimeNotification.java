@@ -63,7 +63,7 @@ public class TimeNotification extends BroadcastReceiver {
             notificationBuilder.setContentText("Купить список");
         } else {
             notificationBuilder
-                    .setContentText("Купить список \""+listWithItems.getList().getTitle()+"\"")
+                    .setContentText("Купить список "+listWithItems.getList().getTitle())
                     .setContentIntent(pendingIntent);
         }
 

@@ -89,6 +89,8 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
     public void addToBegin(IListWithItems iListWithItems) {
         data.add(0, iListWithItems);
         notifyDataSetChanged();
+//        notifyItemInserted(0);
+//        notifyItemRangeChanged(0, getItemCount());
     }
 
     public void removeItem(int position) {
