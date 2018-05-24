@@ -30,12 +30,13 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     private static final String TAG = "myLogs";
     public static final int LIST_ACTIVITY_CODE = 1;
+    public static final int EDIT_LIST_ACTIVITY_CODE = 2;
 
     @InjectPresenter
     MainPresenter presenter;
 
-    @BindView(R.id.bottomNavigation)
-    BottomNavigationBar bottomNavigation;
+//    @BindView(R.id.bottomNavigation)
+//    BottomNavigationBar bottomNavigation;
 
     private ListsFragment listsFragment;
     private PatternsFragment patternsFragment;
@@ -50,16 +51,16 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         ButterKnife.bind(this);
         App.initApp(this);
 
-        bottomNavigation.setMode(BottomNavigationBar.MODE_FIXED);
-        bottomNavigation.setAutoHideEnabled(false);
-        bottomNavigation
-                .addItem(new BottomNavigationItem(R.drawable.list, R.string.lists)
-                        .setActiveColorResource(R.color.colorPrimary)
-                        .setInActiveColorResource(R.color.navigation_gray))
-                .addItem(new BottomNavigationItem(R.drawable.pattern, R.string.patterns)
-                        .setActiveColorResource(R.color.colorPrimary)
-                        .setInActiveColorResource(R.color.navigation_gray))
-                .initialise();
+//        bottomNavigation.setMode(BottomNavigationBar.MODE_FIXED);
+//        bottomNavigation.setAutoHideEnabled(false);
+//        bottomNavigation
+//                .addItem(new BottomNavigationItem(R.drawable.list, R.string.lists)
+//                        .setActiveColorResource(R.color.colorPrimary)
+//                        .setInActiveColorResource(R.color.navigation_gray))
+//                .addItem(new BottomNavigationItem(R.drawable.pattern, R.string.patterns)
+//                        .setActiveColorResource(R.color.colorPrimary)
+//                        .setInActiveColorResource(R.color.navigation_gray))
+//                .initialise();
 
         listsFragment = new ListsFragment();
         patternsFragment = new PatternsFragment();
@@ -69,37 +70,37 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                 .replace(R.id.frameLayout, listsFragment)
                 .commit();
 
-        bottomNavigation.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(int position) {
-                switch (position) {
-                    case 0:
-                        title = getString(R.string.lists);
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.frameLayout, listsFragment)
-                                .commit();
-                        break;
-                    case 1:
-                        title = getString(R.string.patterns);
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.frameLayout, patternsFragment)
-                                .commit();
-                        break;
-                }
-
-                presenter.setActivityTitle(title);
-            }
-
-            @Override
-            public void onTabUnselected(int position) {
-
-            }
-
-            @Override
-            public void onTabReselected(int position) {
-
-            }
-        });
+//        bottomNavigation.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(int position) {
+//                switch (position) {
+//                    case 0:
+//                        title = getString(R.string.lists);
+//                        fragmentManager.beginTransaction()
+//                                .replace(R.id.frameLayout, listsFragment)
+//                                .commit();
+//                        break;
+//                    case 1:
+//                        title = getString(R.string.patterns);
+//                        fragmentManager.beginTransaction()
+//                                .replace(R.id.frameLayout, patternsFragment)
+//                                .commit();
+//                        break;
+//                }
+//
+//                presenter.setActivityTitle(title);
+//            }
+//
+//            @Override
+//            public void onTabUnselected(int position) {
+//
+//            }
+//
+//            @Override
+//            public void onTabReselected(int position) {
+//
+//            }
+//        });
 
 //        IListWithItems iListWithItems = ListModel.getWithItems(this).get(0);
 //
@@ -125,8 +126,8 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                      * Если нет ни одного элемента, создать список и положить туда первый элемент.
                      * Иначе добавить в адаптер
                      */
-                    presenter.addAdapterItemToBegin(iListWithItems);
-                    presenter.smoothScrollToBegin();
+//                    presenter.addAdapterItemToBegin(iListWithItems);
+//                    presenter.smoothScrollToBegin();
                 } else {
                     presenter.updateAdapterItem(position, iListWithItems);
                     presenter.setProducts(ProductModel.getAll(this));
@@ -138,6 +139,22 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                     presenter.removeAdapterItem(position);
                 }
             }
+        }
+
+        if (requestCode == EDIT_LIST_ACTIVITY_CODE) {
+            int position = data.getIntExtra("position", -1);
+
+            if (position != -1) {
+                if (resultCode == RESULT_OK) {
+                    IListWithItems list = Parcels.unwrap(data.getParcelableExtra("list"));
+                    listsFragment.updateAdapterItem(position, list);
+                }
+
+                if (resultCode == App.RESULT_DELETE) {
+                    listsFragment.removeAdapterItem(position);
+                }
+            }
+
         }
     }
 

@@ -25,23 +25,20 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.dmitriylebyodkin.shoplist.R;
-import ru.dmitriylebyodkin.shoplist.models.CategoryModel;
-import ru.dmitriylebyodkin.shoplist.models.ItemModel;
-import ru.dmitriylebyodkin.shoplist.models.ListModel;
-import ru.dmitriylebyodkin.shoplist.models.ProductModel;
-import ru.dmitriylebyodkin.shoplist.presenters.EditListPresenter;
+import ru.dmitriylebyodkin.shoplist.presenters.EditItemPresenter;
 import ru.dmitriylebyodkin.shoplist.room.data.Category;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
-import ru.dmitriylebyodkin.shoplist.views.EditListView;
+import ru.dmitriylebyodkin.shoplist.views.EditItemView;
 
-public class EditItemActivity extends MvpAppCompatActivity implements EditListView {
+public class EditItemActivity extends MvpAppCompatActivity implements EditItemView {
 
     private static final String TAG = "myLogs";
-    @InjectPresenter
-    EditListPresenter presenter;
 
-    @BindView(R.id.toolbar_1)
+    @InjectPresenter
+    EditItemPresenter presenter;
+
+    @BindView(R.id.toolbar)
     Toolbar toolbar1;
     @BindView(R.id.etTitle)
     EditText etTitle;
@@ -64,9 +61,10 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditListVi
     private IItem item;
     private Product product;
     private String title, note;
-    private int count, categoryId, unit;
+    private int count, categoryId, unit, categoryIndex = 0;
     private float cost;
-    private boolean hasItemChanges, hasProductChanges = false;
+    private List<Category> categoryList = new ArrayList<>();
+    private List<String> categories = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,49 +80,26 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditListVi
         title = product.getTitle();
         count = item.getCount();
         cost = item.getCost();
+        note = item.getNote();
+
         categoryId = product.getCategoryId();
         unit = product.getUnit();
+
+        presenter.init(this, product);
 
         etTitle.setText(title);
         etTitle.setSelection(title.length());
 
         RxTextView.textChangeEvents(etTitle)
                 .map(text -> text.text().toString().trim())
-                .subscribe(text -> {
-                    product.setTitle(text);
-                });
+                .subscribe(text -> product.setTitle(text));
 
         etTitle.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus && etTitle.getText().toString().trim().equals("")) {
                 etTitle.setText(title);
             }
-
-            Log.d(TAG, "onFocusChange: " + hasFocus);
         });
 
-        List<Category> categoryList = CategoryModel.getAll(this);
-        List<String> categories = new ArrayList<>();
-        int categoryIndex = 0;
-        int index = 0;
-
-        categories.add(getString(R.string.not_selected_w));
-
-        for (Category category: categoryList) {
-            categories.add(category.getTitle());
-
-            if (category.getId() == product.getCategoryId()) {
-                categoryIndex = index;
-            }
-
-            index++;
-        }
-
-        if (product.getCategoryId() != 0) {
-            categoryIndex++;
-        }
-
-        spinnerCategory.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categories));
-        spinnerCategory.setSelection(categoryIndex);
         spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -133,6 +108,8 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditListVi
                 } else {
                     product.setCategoryId(categoryList.get(position-1).getId());
                 }
+
+                Log.d(TAG, "onItemSelected: " + product.getCategoryId());
             }
 
             @Override
@@ -141,13 +118,19 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditListVi
             }
         });
 
-        etCount.setText(String.valueOf(item.getCount()));
+
+        if (count == 0) {
+            etCount.setText(String.valueOf(item.getCount()));
+            etCount.setSelection(String.valueOf(item.getCount()).length());
+        } else {
+            etCount.setText(String.valueOf(count));
+            etCount.setSelection(String.valueOf(count).length());
+        }
         etCount.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus && etCount.getText().toString().trim().equals("")) {
                 etCount.setText(String.valueOf(1));
             }
         });
-        etCount.setSelection(String.valueOf(item.getCount()).length());
 
         btnMinus.setOnClickListener(v -> {
             int count = Integer.parseInt(etCount.getText().toString());
@@ -169,11 +152,6 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditListVi
 
         etCost.setText(String.valueOf(item.getCost()));
         etCost.setSelection(String.valueOf(item.getCost()).length());
-
-//        List<String> units = new ArrayList<>();
-//
-//        units.add(getString(R.string.not_selected_w));
-//        units.addAll(Arrays.asList(Product.UNITS));
 
         spinnerUnit.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Product.UNITS));
         spinnerUnit.setSelection(product.getUnit());
@@ -223,28 +201,19 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditListVi
             product.setTitle(title);
         }
 
-        int updatedTimestamp = 0;
-
         if (item.getCount() != count || item.getCost() != cost || !item.getNote().equals(note)) {
-            updatedTimestamp = (int) (System.currentTimeMillis()/1000L);
-            ListModel.updateUpdatedAtById(this, item.getListId(), updatedTimestamp);
-            ItemModel.update(this, item);
+            presenter.updateUpdatedAtList(this, item.getListId());
+            presenter.updateItem(this, item);
         }
 
-        if (!product.getTitle().equals(title) || product.getCategoryId() != categoryId) {
-            if (updatedTimestamp == 0) {
-                updatedTimestamp = (int) (System.currentTimeMillis()/1000L);
-            }
-
-            ListModel.updateUpdatedAtById(this, item.getListId(), updatedTimestamp);
-            ProductModel.update(this, product);
+        if (!product.getTitle().equals(title) || product.getCategoryId() != categoryId || product.getUnit() != unit) {
+            presenter.updateUpdatedAtList(this, item.getListId());
+            presenter.updateProduct(this, product);
         }
-
-        Log.d(TAG, "onBackPressed: " + updatedTimestamp);
 
         intent.putExtra("item", Parcels.wrap(item));
         intent.putExtra("product", Parcels.wrap(product));
-        intent.putExtra("updated_timestamp", updatedTimestamp);
+        intent.putExtra("updated_timestamp", (int) (System.currentTimeMillis()/1000L));
 
         setResult(RESULT_OK, intent);
         finish();
@@ -254,5 +223,22 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditListVi
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    @Override
+    public void setCategoryIndex(int categoryIndex) {
+        this.categoryIndex = categoryIndex;
+        spinnerCategory.setSelection(categoryIndex);
+    }
+
+    @Override
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
+        spinnerCategory.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categories));
+    }
+
+    @Override
+    public void setCategoryList(List<Category> categoryList) {
+        this.categoryList = categoryList;
     }
 }

@@ -48,6 +48,10 @@ public class ListsPresenter extends MvpPresenter<ListsView> {
         getViewState().initList();
     }
 
+    public void setAdapter() {
+        getViewState().setAdapter();
+    }
+
     public int createList(Context context, IList list) {
         return (int) ListModel.insert(context, list)[0];
     }

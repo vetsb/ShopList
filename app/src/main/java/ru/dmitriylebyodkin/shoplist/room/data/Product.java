@@ -10,15 +10,16 @@ import org.parceler.Parcel;
 public class Product {
     public final static String[] UNITS = new String[]{
             "шт",
-            "килограмм",
-            "грамм",
-            "литр",
-            "миллилитр",
+            "гр",
+            "кг",
+            "мл",
+            "л",
+            "бут",
+            "упак",
             "банка",
             "пакет",
-            "упаковка",
-            "десяток",
-            "бутылка",
+            "метр",
+            "пара"
     };
 
     @PrimaryKey(autoGenerate = true)

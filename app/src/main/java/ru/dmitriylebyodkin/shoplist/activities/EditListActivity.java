@@ -42,8 +42,9 @@ import ru.dmitriylebyodkin.shoplist.views.EditListView;
 public class EditListActivity extends MvpAppCompatActivity implements EditListView {
 
     private static final int ADD_SHOP_CODE = 1;
-    private static final String TAG = "myLogs";
     private static final int TIME_NOTIFICATION_CODE = 2;
+    private static final String TAG = "myLogs";
+
     @InjectPresenter
     EditListPresenter presenter;
 

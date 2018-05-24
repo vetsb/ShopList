@@ -11,7 +11,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 
 import ru.dmitriylebyodkin.shoplist.models.CategoryModel;
 import ru.dmitriylebyodkin.shoplist.models.ProductModel;
@@ -137,5 +139,24 @@ public class App extends Application {
         double dist = ad * 6372795;
 
         return (int) dist;
+    }
+
+    public static DateFormatSymbols getRussianLocale() {
+        Locale locale = new Locale("ru");
+        DateFormatSymbols dfs = DateFormatSymbols.getInstance(locale);
+        String[] months = {
+                "января", "февраля", "марта", "апреля", "мая", "июня",
+                "июля", "августа", "сентября", "октября", "ноября", "декабря"};
+        String[] shortMonths = {
+                "янв", "фев", "мар", "апр", "май", "июн",
+                "июл", "авг", "сен", "окт", "ноя", "дек"};
+        dfs.setMonths(months);
+        dfs.setShortMonths(shortMonths);
+        String[] weekdays = {"", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"};
+        String[] shortWeekdays = {"", "вс", "пн", "вт", "ср", "чт", "пт", "сб"};
+        dfs.setWeekdays(weekdays);
+        dfs.setShortWeekdays(shortWeekdays);
+
+        return dfs;
     }
 }

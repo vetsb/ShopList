@@ -1,43 +1,91 @@
 <LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout
-        android:id="@+id/container"
+    <com.daimajia.swipe.SwipeLayout
         style="@style/AutoHeight"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:background="@drawable/item_background">
-
-        <TextView
-            android:id="@+id/tvTitle"
-            style="@style/AutoHeight"
-            android:textSize="22sp"
-            android:textColor="#000000"
-            tools:text="На день рождения"
-            android:layout_marginBottom="11dp"/>
-
-        <TextView
-            android:id="@+id/tvItems"
-            style="@style/AutoHeight"
-            android:textSize="16sp"
-            android:lineSpacingExtra="6dp"
-            android:textColor="#676767"
-            android:layout_marginBottom="15dp"
-            tools:text="Торт, свечи, шампанское, лаваш, огурец, помидор, майонез, картофель, сельдь"/>
-
-        <TextView
-            android:id="@+id/tvUpdatedAt"
-            style="@style/AutoHeight"
-            android:textSize="12sp"
-            android:textColor="#A8A8A8"
-            tools:text="изменен сегодня в 23:40"/>
-    </LinearLayout>
-
-    <View
-        android:id="@+id/viewLine"
+        android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#CDCDCD"/>
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:id="@+id/controls">
+
+            <LinearLayout
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:id="@+id/layoutEdit"
+                android:clickable="true"
+                android:gravity="center"
+                android:focusable="true"
+                android:background="@color/colorPrimary">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="ContentDescription"
+                    android:src="@drawable/edit_lg"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:id="@+id/layoutDelete"
+                android:clickable="true"
+                android:gravity="center"
+                android:focusable="true"
+                android:background="@color/red">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="ContentDescription"
+                    android:src="@drawable/delete_lg"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/AutoHeight"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/container"
+                style="@style/AutoHeight"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/item_background">
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    style="@style/AutoHeight"
+                    android:textSize="22sp"
+                    android:textColor="#000000"
+                    tools:text="На день рождения"
+                    android:layout_marginBottom="11dp"/>
+
+                <TextView
+                    android:id="@+id/tvItems"
+                    style="@style/AutoHeight"
+                    android:textSize="16sp"
+                    android:lineSpacingExtra="6dp"
+                    android:textColor="#676767"
+                    android:layout_marginBottom="15dp"
+                    tools:text="Торт, свечи, шампанское, лаваш, огурец, помидор, майонез, картофель, сельдь"/>
+
+                <TextView
+                    android:id="@+id/tvUpdatedAt"
+                    style="@style/AutoHeight"
+                    android:textSize="12sp"
+                    android:textColor="#A8A8A8"
+                    tools:text="изменен сегодня в 23:40"/>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/viewLine"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#CDCDCD"/>
+        </LinearLayout>
+    </com.daimajia.swipe.SwipeLayout>
 </LinearLayout>

@@ -6,37 +6,29 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class GooglePlaces {
-    @SerializedName("html_attributions")
+//    @SerializedName("next_page_token")
+//    @Expose
+//    private String nextPageToken;
+    @SerializedName("next_page_token")
     @Expose
-    private List<Object> htmlAttributions = null;
+    private String nextPageToken;
     @SerializedName("results")
     @Expose
-    private List<GoogleResult> results = null;
-    @SerializedName("status")
-    @Expose
-    private String status;
+    private List<GooglePlaceResult> results = null;
 
-    public List<Object> getHtmlAttributions() {
-        return htmlAttributions;
+    public String getNextPageToken() {
+        return nextPageToken;
     }
 
-    public void setHtmlAttributions(List<Object> htmlAttributions) {
-        this.htmlAttributions = htmlAttributions;
+    public void setNextPageToken(String nextPageToken) {
+        this.nextPageToken = nextPageToken;
     }
 
-    public List<GoogleResult> getResults() {
+    public List<GooglePlaceResult> getResults() {
         return results;
     }
 
-    public void setResults(List<GoogleResult> results) {
+    public void setResults(List<GooglePlaceResult> results) {
         this.results = results;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 }

@@ -24,7 +24,7 @@
                 app:statusBarScrim="@color/colorAccent">
 
                 <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar_1"
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/colorPrimary"

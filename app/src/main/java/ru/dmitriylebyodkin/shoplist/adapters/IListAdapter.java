@@ -4,30 +4,30 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.daimajia.swipe.SwipeLayout;
 
 import org.parceler.Parcels;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.dmitriylebyodkin.shoplist.App;
 import ru.dmitriylebyodkin.shoplist.R;
+import ru.dmitriylebyodkin.shoplist.activities.EditListActivity;
 import ru.dmitriylebyodkin.shoplist.activities.InfoActivity;
 import ru.dmitriylebyodkin.shoplist.activities.MainActivity;
-import ru.dmitriylebyodkin.shoplist.room.RoomDb;
-import ru.dmitriylebyodkin.shoplist.room.dao.ProductDao;
+import ru.dmitriylebyodkin.shoplist.models.ListModel;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
 import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
@@ -43,31 +43,6 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
         this.context = context;
         this.data = data;
         this.productList = productList;
-
-//        if (productList == null) {
-//            this.productList = new ArrayList<>();
-//        } else {
-//            this.productList = productList;
-//        }
-//
-//        Product product;
-//        List<Integer> productIds = new ArrayList<>();
-//
-//        for (IListWithItems list: data) {
-//            for (IItem item: list.getItems()) {
-//                if (productIds.indexOf(item.getProductId()) == -1) {
-//                    productIds.add(item.getProductId());
-//                }
-//            }
-//        }
-//
-//        for (Iterator<Product> iterator = productList.iterator(); iterator.hasNext();) {
-//            product = iterator.next();
-//
-//            if (productIds.indexOf(product.getId()) == -1) {
-//                iterator.remove();
-//            }
-//        }
     }
 
     public List<IListWithItems> getData() {
@@ -89,8 +64,6 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
     public void addToBegin(IListWithItems iListWithItems) {
         data.add(0, iListWithItems);
         notifyDataSetChanged();
-//        notifyItemInserted(0);
-//        notifyItemRangeChanged(0, getItemCount());
     }
 
     public void removeItem(int position) {
@@ -105,6 +78,15 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.swipeLayout)
+        SwipeLayout swipeLayout;
+
+        @BindView(R.id.layoutEdit)
+        LinearLayout layoutEdit;
+
+        @BindView(R.id.layoutDelete)
+        LinearLayout layoutDelete;
+
         @BindView(R.id.container)
         LinearLayout container;
 
@@ -136,12 +118,28 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
         IList list = listWithItems.getList();
         List<IItem> itemList = listWithItems.getItems();
 
+        holder.layoutEdit.setOnClickListener(v -> {
+            Intent intent = new Intent(context, EditListActivity.class);
+            intent.putExtra("list", Parcels.wrap(listWithItems));
+            intent.putExtra("position", position);
+            ((MainActivity) context).startActivityForResult(intent, MainActivity.EDIT_LIST_ACTIVITY_CODE);
+            holder.swipeLayout.close();
+        });
+
+        holder.layoutDelete.setOnClickListener(v -> {
+            ListModel.delete(context, listWithItems.getList());
+            data.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(0, getItemCount());
+            Toast.makeText(context, R.string.is_removed, Toast.LENGTH_LONG).show();
+        });
+
         holder.container.setOnClickListener(v -> {
             Intent intent = new Intent(context, InfoActivity.class);
             intent.putExtra("list", Parcels.wrap(listWithItems));
-//            intent.putExtra("products", Parcels.wrap(productList));
             intent.putExtra("position", position);
             ((MainActivity) context).startActivityForResult(intent, MainActivity.LIST_ACTIVITY_CODE);
+            holder.swipeLayout.close();
         });
 
         /**
@@ -216,10 +214,6 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestampUpdated*1000L);
 
-        int hours, minutes;
-        hours = calendar.get(Calendar.HOUR_OF_DAY);
-        minutes = calendar.get(Calendar.MINUTE);
-
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.HOUR, 0);
         calendar.set(Calendar.MINUTE, 0);
@@ -240,18 +234,18 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
         timestampToday = (int) (calendar.getTimeInMillis()/1000L);
 
         if (timestampUpdatedDay == timestampToday) {
-            updatedText += "сегодня ";
+            updatedText += "сегодня";
         } else if (timestampToday - timestampUpdatedDay == 60*60*24) {
-            updatedText += "вчера ";
+            updatedText += "вчера";
         } else if (timestampToday - timestampUpdatedDay == 60*60*24*2) {
-            updatedText += "позавчера ";
+            updatedText += "позавчера";
         } else {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-
-            updatedText += sdf.format(new Date(timestampUpdatedDay*1000L));
+            SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM YYYY", App.getRussianLocale());
+            updatedText += sdf.format(new Date(timestampUpdatedDay*1000L)) + " ";
         }
 
-        updatedText += String.valueOf(hours) + ":" + String.valueOf(minutes);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        updatedText += " в " + sdf.format(new Date(timestampUpdated*1000L));
 
         holder.tvUpdatedAt.setText(updatedText);
     }

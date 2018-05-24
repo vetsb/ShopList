@@ -27,10 +27,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ru.dmitriylebyodkin.shoplist.App;
 import ru.dmitriylebyodkin.shoplist.R;
 import ru.dmitriylebyodkin.shoplist.activities.InfoActivity;
 import ru.dmitriylebyodkin.shoplist.activities.MainActivity;
@@ -74,7 +76,7 @@ public class ListsFragment extends MvpAppCompatFragment implements ListsView {
         View view = getLayoutInflater().inflate(R.layout.dialog_create_list, null);
         final EditText etTitle = view.findViewById(R.id.etTitle);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.YYYY");
+        SimpleDateFormat sdf = new SimpleDateFormat("d MMMM", App.getRussianLocale());
 
         String date = sdf.format(new Date(System.currentTimeMillis()));
 
@@ -122,9 +124,14 @@ public class ListsFragment extends MvpAppCompatFragment implements ListsView {
                     iListWithItems.setList(list);
                     iListWithItems.setItems(new ArrayList<>());
 
+                    listLists.add(0, iListWithItems);
+                    presenter.setAdapter();
+                    presenter.initList();
+
                     Intent intent = new Intent(getActivity(), InfoActivity.class);
                     intent.putExtra("list", Parcels.wrap(iListWithItems));
                     intent.putExtra("new_list", true);
+                    intent.putExtra("position", 0);
                     getActivity().startActivityForResult(intent, MainActivity.LIST_ACTIVITY_CODE);
                 })
                 .setNeutralButton(R.string.cancel, null)

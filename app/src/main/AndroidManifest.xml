@@ -9,7 +9,6 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:name=".App"
@@ -25,39 +24,36 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activities.InfoActivity"
             android:label="@string/list_activity_title"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.EditItemActivity"
             android:label="@string/edit_item_activity_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.EditListActivity"
             android:label="@string/edit_list_activity_title"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.AddShopActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/add_shop_activity_title"/>
+            android:label="@string/add_shop_activity_title"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.MapActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/map" />
-
+            android:label="@string/map"
+            android:screenOrientation="portrait"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBCrTw3PJxlCAnHYfi7ZlX4ze4zWZEvh7I"/>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <receiver
             android:name=".notifications.TimeNotification"
             android:enabled="true"
@@ -65,5 +61,4 @@
             tools:ignore="ExportedReceiver">
         </receiver>
     </application>
-
 </manifest>

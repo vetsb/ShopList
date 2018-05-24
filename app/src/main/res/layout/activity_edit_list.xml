@@ -44,6 +44,7 @@
             style="@style/EditTextLabel"
             android:text="@string/reminder"
             android:visibility="gone"/>
+
         <LinearLayout
             style="@style/AutoHeight"
             android:visibility="gone">
