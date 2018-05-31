@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
@@ -53,6 +55,8 @@ public class ListsFragment extends MvpAppCompatFragment implements ListsView {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.tvNoItems)
+    TextView tvNoItems;
 
     private List<IListWithItems> listLists;
     private IListAdapter iListAdapter;
@@ -65,10 +69,13 @@ public class ListsFragment extends MvpAppCompatFragment implements ListsView {
         View view = inflater.inflate(R.layout.fragment_lists, container, false);
         ButterKnife.bind(this, view);
 
-        productList = ProductModel.getAll(getActivity());
         presenter.init(getActivity());
 
         return view;
+    }
+
+    public void setProducts(List<Product> productList) {
+        this.productList = productList;
     }
 
     @OnClick(R.id.floatingActionButton)
@@ -163,6 +170,10 @@ public class ListsFragment extends MvpAppCompatFragment implements ListsView {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(iListAdapter);
+
+        if (iListAdapter.getItemCount() == 1) {
+            presenter.hideNoItems();
+        }
     }
 
     @Override
@@ -173,6 +184,10 @@ public class ListsFragment extends MvpAppCompatFragment implements ListsView {
     @Override
     public void addAdapterItemToBegin(IListWithItems iListWithItems) {
         iListAdapter.addToBegin(iListWithItems);
+
+        if (iListAdapter.getItemCount() == 1) {
+            presenter.hideNoItems();
+        }
     }
 
     @Override
@@ -183,6 +198,11 @@ public class ListsFragment extends MvpAppCompatFragment implements ListsView {
     @Override
     public void removeAdapterItem(int position) {
         iListAdapter.removeItem(position);
+
+        if (iListAdapter.getItemCount() == 0) {
+            presenter.showNoItems();
+        }
+
         Toast.makeText(getActivity(), R.string.is_removed, Toast.LENGTH_LONG).show();
     }
 
@@ -193,12 +213,18 @@ public class ListsFragment extends MvpAppCompatFragment implements ListsView {
     }
 
     @Override
-    public void showLayoutNotItems() {
-
+    public void showNoItems() {
+        tvNoItems.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
     }
 
     @Override
-    public void hideLayoutNotItems() {
+    public void hideNoItems() {
+        tvNoItems.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+    }
 
+    public int getItemCount() {
+        return iListAdapter.getItemCount();
     }
 }

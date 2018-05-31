@@ -22,8 +22,6 @@ import ru.dmitriylebyodkin.shoplist.views.EditItemView;
 
 @InjectViewState
 public class EditItemPresenter extends MvpPresenter<EditItemView> {
-    private static final String TAG = "myLogs";
-
     private List<Category> categoryList = new ArrayList<>();
     private List<String> categories = new ArrayList<>();
     private int categoryIndex = 0;

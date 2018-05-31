@@ -12,7 +12,7 @@ import ru.dmitriylebyodkin.shoplist.room.data.Category;
 
 @Dao
 public interface CategoryDao {
-    @Query("SELECT * FROM Category ORDER BY id DESC")
+    @Query("SELECT * FROM Category ORDER BY id")
     List<Category> getAll();
 
     @Insert

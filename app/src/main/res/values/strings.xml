@@ -48,4 +48,18 @@
     <string name="without_category">Без категории</string>
     <string name="lists">Списки</string>
     <string name="patterns">Шаблоны</string>
+    <string name="products">Товары</string>
+    <string name="categories">Категории</string>
+    <string name="trash">Корзина</string>
+    <string name="restore">Восстановить</string>
+    <string name="is_restore">Восстановлен</string>
+    <string name="no_lists">Ещё нет ни одного списка</string>
+    <string name="empty_cart">Корзина пуста</string>
+    <string name="edit">Изменить</string>
+    <string name="deleting_message_category">Вы уверены, что хотите удалить?\n\nВсе товары этой категории будут без категории.</string>
+    <string name="editing_category">Редактирование категории</string>
+    <string name="no_categories">Ещё нет ни одной категории</string>
+    <string name="new_category">Новая категория</string>
+    <string name="location_dialog_title">Включить геолокацию?</string>
+    <string name="location_dialog_message">Включите геолокацию для нахождения магазинов поблизости.</string>
 </resources>

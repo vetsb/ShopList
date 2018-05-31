@@ -261,4 +261,15 @@ public class InfoPresenter extends MvpPresenter<InfoView> {
     public void setAdapterItems(List<IItem> items) {
         getViewState().setAdapterItems(items);
     }
+
+    public void deleteItem(Context context, IItem item, int position) {
+        int timestamp = (int) (System.currentTimeMillis()/1000L);
+
+        ListModel.updateUpdatedAtById(context, item.getListId(), timestamp);
+        ItemModel.delete(context, item);
+
+        getViewState().deleteAdapterItem(item, position);
+        getViewState().updateSummary();
+        getViewState().setUpdatedTimestamp(timestamp);
+    }
 }

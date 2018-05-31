@@ -6,12 +6,13 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 import java.util.List;
 
+import ru.dmitriylebyodkin.shoplist.room.data.Category;
+import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
 
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface MainView extends MvpView {
-
     void setActivityTitle(String title);
 
     void smoothScrollToBegin();
@@ -25,4 +26,14 @@ public interface MainView extends MvpView {
     void removeAdapterItem(int position);
 
     void setAdapterProducts(List<Product> productList);
+
+    void showListNoItems();
+
+    void showCartNoItems();
+
+    void showCategoryEditDialog(Category category, int position);
+
+    void showCategoryDeleteDialog(Category category, int position);
+
+    void showListDeleteDialog(IList list, int position);
 }

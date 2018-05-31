@@ -19,6 +19,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -325,6 +326,7 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
     @Override
     public void addAdapterItem(IItem item) {
         adapter.addItem(item);
+        sectionAdapter.addItem(item);
         presenter.updateSummary(list);
     }
 
@@ -373,16 +375,19 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
     @Override
     public void checkAll() {
         adapter.checkAll();
+        sectionAdapter.checkAll();
     }
 
     @Override
     public void resetAll() {
         adapter.resetAll();
+        sectionAdapter.resetAll();
     }
 
     @Override
     public void deleteChecked() {
         adapter.deleteChecked();
+        sectionAdapter.deleteChecked();
     }
 
     @OnClick(R.id.ivAdd)
@@ -481,6 +486,8 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
             IListWithItems newList = Parcels.unwrap(data.getParcelableExtra("list"));
             int shopId = newList.getList().getShopId();
 
+            list.getList().setUpdatedAt(newList.getList().getUpdatedAt());
+
             /**
              * Если выбран новый магазин, то пройтись по всем элементам, которые покупались в том же магазине.
              * Определить самую часто встречаемую стоимость и установить ее тем элементам текущего списка, у которых нет цены и которые еще не куплены.
@@ -548,6 +555,21 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
     public void setUpdatedTimestamp(int timestamp) {
         list.getList().setUpdatedAt(timestamp);
         intent.putExtra("list", Parcels.wrap(list));
+    }
+
+    @Override
+    public void deleteItem(IItem item, int position) {
+        presenter.deleteItem(this, item, position);
+    }
+
+    @Override
+    public void deleteAdapterItem(IItem item, int position) {
+        adapter.deleteItem(item);
+        sectionAdapter.update();
+
+        searchAdapter.add(ProductModel.getById(this, item.getProductId()).getTitle());
+
+        Toast.makeText(this, R.string.is_removed, Toast.LENGTH_LONG).show();
     }
 
     @Override

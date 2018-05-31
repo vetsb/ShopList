@@ -69,6 +69,8 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ViewHolder> im
                 selectedPosition = i;
             }
         }
+
+        notifyDataSetChanged();
     }
 
     public void setSelectedId(int shopId) {

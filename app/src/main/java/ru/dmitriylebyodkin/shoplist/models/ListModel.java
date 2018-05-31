@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.List;
 
 import ru.dmitriylebyodkin.shoplist.activities.EditItemActivity;
+import ru.dmitriylebyodkin.shoplist.activities.EditListActivity;
 import ru.dmitriylebyodkin.shoplist.activities.MainActivity;
 import ru.dmitriylebyodkin.shoplist.room.RoomDb;
 import ru.dmitriylebyodkin.shoplist.room.dao.IListDao;
@@ -46,5 +47,17 @@ public class ListModel {
 
     public static List<IList> getByShopId(Context context, int shopId) {
         return getDao(context).getByShopId(shopId);
+    }
+
+    public static void deleteTemporarily(Context context, IList list) {
+        getDao(context).deleteTemporarily(list.getId());
+    }
+
+    public static List<IListWithItems> getDeletedWithItems(Context context) {
+        return getDao(context).getDeletedWithItems();
+    }
+
+    public static void restore(Context context, IList list) {
+        getDao(context).restore(list.getId());
     }
 }

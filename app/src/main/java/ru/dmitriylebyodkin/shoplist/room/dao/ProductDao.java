@@ -30,4 +30,6 @@ public interface ProductDao {
     @Query("SELECT * FROM Product WHERE id=:productId LIMIT 1")
     Product getById(int productId);
 
+    @Query("UPDATE Product SET categoryId=0 WHERE categoryId=:categoryId")
+    void setNullCategoryId(int categoryId);
 }

@@ -1,9 +1,10 @@
 package ru.dmitriylebyodkin.shoplist.activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -17,11 +18,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.dmitriylebyodkin.shoplist.App;
-import ru.dmitriylebyodkin.shoplist.fragments.ListsFragment;
 import ru.dmitriylebyodkin.shoplist.R;
-import ru.dmitriylebyodkin.shoplist.fragments.PatternsFragment;
+import ru.dmitriylebyodkin.shoplist.fragments.CartFragment;
+import ru.dmitriylebyodkin.shoplist.fragments.CategoriesFragment;
+import ru.dmitriylebyodkin.shoplist.fragments.ListsFragment;
 import ru.dmitriylebyodkin.shoplist.models.ProductModel;
 import ru.dmitriylebyodkin.shoplist.presenters.MainPresenter;
+import ru.dmitriylebyodkin.shoplist.room.data.Category;
+import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
 import ru.dmitriylebyodkin.shoplist.views.MainView;
@@ -35,13 +39,13 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     @InjectPresenter
     MainPresenter presenter;
 
-//    @BindView(R.id.bottomNavigation)
-//    BottomNavigationBar bottomNavigation;
+    @BindView(R.id.bottomNavigation)
+    BottomNavigationBar bottomNavigation;
 
     private ListsFragment listsFragment;
-    private PatternsFragment patternsFragment;
+    private CartFragment cartFragment;
+    private CategoriesFragment categoriesFragment;
     private FragmentManager fragmentManager;
-    private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,56 +55,74 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         ButterKnife.bind(this);
         App.initApp(this);
 
-//        bottomNavigation.setMode(BottomNavigationBar.MODE_FIXED);
-//        bottomNavigation.setAutoHideEnabled(false);
-//        bottomNavigation
-//                .addItem(new BottomNavigationItem(R.drawable.list, R.string.lists)
-//                        .setActiveColorResource(R.color.colorPrimary)
-//                        .setInActiveColorResource(R.color.navigation_gray))
-//                .addItem(new BottomNavigationItem(R.drawable.pattern, R.string.patterns)
-//                        .setActiveColorResource(R.color.colorPrimary)
-//                        .setInActiveColorResource(R.color.navigation_gray))
-//                .initialise();
+        bottomNavigation.setMode(BottomNavigationBar.MODE_FIXED_NO_TITLE);
+        bottomNavigation.setAutoHideEnabled(false);
+        bottomNavigation.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
+        bottomNavigation
+                .addItem(new BottomNavigationItem(R.drawable.list, ""))
+                .addItem(new BottomNavigationItem(R.drawable.cart, ""))
+                .addItem(new BottomNavigationItem(R.drawable.pattern, ""))
+                .addItem(new BottomNavigationItem(R.drawable.delete_blue, ""))
+                .addItem(new BottomNavigationItem(R.drawable.settings, ""))
+                .initialise();
+
+        List<Product> productList = ProductModel.getAll(this);
 
         listsFragment = new ListsFragment();
-        patternsFragment = new PatternsFragment();
+        listsFragment.setProducts(productList);
+
+        cartFragment = new CartFragment();
+        cartFragment.setProducts(productList);
+
+        categoriesFragment = new CategoriesFragment();
 
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.frameLayout, listsFragment)
                 .commit();
 
-//        bottomNavigation.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
-//            @Override
-//            public void onTabSelected(int position) {
-//                switch (position) {
-//                    case 0:
-//                        title = getString(R.string.lists);
-//                        fragmentManager.beginTransaction()
-//                                .replace(R.id.frameLayout, listsFragment)
-//                                .commit();
-//                        break;
-//                    case 1:
-//                        title = getString(R.string.patterns);
-//                        fragmentManager.beginTransaction()
-//                                .replace(R.id.frameLayout, patternsFragment)
-//                                .commit();
-//                        break;
-//                }
-//
-//                presenter.setActivityTitle(title);
-//            }
-//
-//            @Override
-//            public void onTabUnselected(int position) {
-//
-//            }
-//
-//            @Override
-//            public void onTabReselected(int position) {
-//
-//            }
-//        });
+        bottomNavigation.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(int position) {
+                String title = getTitle().toString();
+
+                switch (position) {
+                    case 0:
+                        title = getString(R.string.lists);
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.frameLayout, listsFragment)
+                                .commit();
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        title = getString(R.string.categories);
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.frameLayout, categoriesFragment)
+                                .commit();
+                        break;
+                    case 3:
+                        title = getString(R.string.trash);
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.frameLayout, cartFragment)
+                                .commit();
+                        break;
+                    case 4:
+                        break;
+                }
+
+                presenter.setActivityTitle(title);
+            }
+
+            @Override
+            public void onTabUnselected(int position) {
+            }
+
+            @Override
+            public void onTabReselected(int position) {
+
+            }
+        });
 
 //        IListWithItems iListWithItems = ListModel.getWithItems(this).get(0);
 //
@@ -186,10 +208,48 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     @Override
     public void removeAdapterItem(int position) {
         listsFragment.removeAdapterItem(position);
+
+        if (listsFragment.getItemCount() == 0) {
+            listsFragment.showNoItems();
+        }
+
+        Toast.makeText(this, R.string.is_removed, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void setAdapterProducts(List<Product> productList) {
         listsFragment.setAdapterProducts(productList);
+    }
+
+    @Override
+    public void showListNoItems() {
+        listsFragment.showNoItems();
+    }
+
+    @Override
+    public void showCartNoItems() {
+        cartFragment.showNoItems();
+    }
+
+    @Override
+    public void showCategoryEditDialog(Category category, int position) {
+        categoriesFragment.showEditDialog(category, position);
+    }
+
+    @Override
+    public void showCategoryDeleteDialog(Category category, int position) {
+        categoriesFragment.showDeleteDialog(category, position);
+    }
+
+    @Override
+    public void showListDeleteDialog(IList list, int position) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.deleting)
+                .setMessage(R.string.deleting_message)
+                .setPositiveButton(R.string.yes, (dialog, which) -> presenter.remove(getApplicationContext(), list, position))
+                .setNegativeButton(R.string.no, null)
+                .create();
+
+        alertDialog.show();
     }
 }

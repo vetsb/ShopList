@@ -10,19 +10,31 @@ import ru.dmitriylebyodkin.shoplist.room.dao.ProductDao;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
 
 public class ProductModel {
+    public static ProductDao getDao(Context context) {
+        return RoomDb.getInstance(context).getProductDao();
+    }
+
     public static long[] insert(Context context, Product product) {
-        return RoomDb.getInstance(context).getProductDao().insert(product);
+        return getDao(context).insert(product);
     }
 
     public static void update(Context context, Product product) {
-        RoomDb.getInstance(context).getProductDao().update(product);
+        getDao(context).update(product);
     }
 
     public static void delete(Context context, Product product) {
-        RoomDb.getInstance(context).getProductDao().delete(product);
+        getDao(context).delete(product);
     }
 
     public static List<Product> getAll(Context context) {
-        return RoomDb.getInstance(context).getProductDao().getAll();
+        return getDao(context).getAll();
+    }
+
+    public static void setNullCategoryId(Context context, int categoryId) {
+        getDao(context).setNullCategoryId(categoryId);
+    }
+
+    public static Product getById(Context context, int productId) {
+        return getDao(context).getById(productId);
     }
 }

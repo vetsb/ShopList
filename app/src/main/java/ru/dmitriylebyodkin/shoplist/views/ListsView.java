@@ -24,7 +24,7 @@ public interface ListsView extends MvpView {
 
     void smoothScrollToBegin();
 
-    void showLayoutNotItems();
+    void showNoItems();
 
-    void hideLayoutNotItems();
+    void hideNoItems();
 }

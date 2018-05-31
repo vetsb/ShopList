@@ -4,20 +4,26 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.dmitriylebyodkin.shoplist.R;
 import ru.dmitriylebyodkin.shoplist.data.Section;
+import ru.dmitriylebyodkin.shoplist.models.ProductModel;
+import ru.dmitriylebyodkin.shoplist.room.data.IItem;
+import ru.dmitriylebyodkin.shoplist.room.data.Product;
 
 public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.ViewHolder> {
 
+    private static final String TAG = "myLogs";
     private Context context;
     private List<Section> sectionList;
 
@@ -29,6 +35,77 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.ViewHold
     public void setList(List<Section> list) {
         this.sectionList = list;
         notifyDataSetChanged();
+    }
+
+    public void checkAll() {
+        for (Section section: sectionList) {
+            section.getAdapter().checkAll();
+        }
+    }
+
+    public void resetAll() {
+        for (Section section: sectionList) {
+            section.getAdapter().resetAll();
+        }
+    }
+
+    public void deleteChecked() {
+        int i = 0;
+
+        for (Iterator<Section> iterator = sectionList.iterator(); iterator.hasNext(); ) {
+            Section section = iterator.next();
+
+            section.getAdapter().deleteChecked();
+
+            notifyItemChanged(i);
+
+            if (section.getAdapter().getItemCount() == 0) {
+                iterator.remove();
+                notifyItemRemoved(i);
+                notifyItemRangeChanged(0, getItemCount());
+            }
+
+            i++;
+        }
+    }
+
+    public void addItem(IItem item) {
+        int i = 0;
+
+        for (Section section: sectionList) {
+            Product product1 = ProductModel.getById(context, item.getProductId());
+            Product product2 = ProductModel.getById(context, section.getAdapter().getItems().get(0).getProductId());
+
+            /*
+            Ид категории товара, который хотим добавить
+             */
+            int categoryId1 = product1.getCategoryId();
+
+            /*
+            Ид категории, которая в текущем Section
+             */
+            int categoryId2 = product2.getCategoryId();
+
+            if (categoryId1 == categoryId2) {
+                section.getAdapter().addItem(item);
+
+                notifyItemChanged(i);
+            }
+
+            i++;
+        }
+    }
+
+    public void update() {
+        notifyDataSetChanged();
+
+        for (Iterator<Section> iterator = sectionList.iterator(); iterator.hasNext(); ) {
+            Section section = iterator.next();
+
+            if (section.getAdapter().getItemCount() == 0) {
+                iterator.remove();
+            }
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

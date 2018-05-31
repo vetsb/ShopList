@@ -23,7 +23,9 @@ import com.daimajia.swipe.SwipeLayout;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,6 +36,7 @@ import ru.dmitriylebyodkin.shoplist.activities.InfoActivity;
 import ru.dmitriylebyodkin.shoplist.models.ItemModel;
 import ru.dmitriylebyodkin.shoplist.models.ListModel;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
+import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
 import ru.dmitriylebyodkin.shoplist.views.InfoView;
 
@@ -103,13 +106,22 @@ public class IItemAdapter extends RecyclerView.Adapter<IItemAdapter.ViewHolder> 
     }
 
     public void deleteChecked() {
+        List<IItem> removeItems = new ArrayList<>();
+        IItem item;
+
         for (int i = 0; i < listItems.size(); i++) {
-            if (listItems.get(i).isBought()) {
-                ItemModel.delete(context, listItems.get(i));
-                listItems.remove(i);
+            item = listItems.get(i);
+
+            if (item.isBought()) {
+                ItemModel.delete(context, item);
+
+                removeItems.add(item);
                 notifyItemRemoved(i);
+                notifyItemRangeChanged(0, getItemCount());
             }
         }
+
+        listItems.removeAll(removeItems);
     }
 
     public void addProduct(Product product) {
@@ -125,6 +137,30 @@ public class IItemAdapter extends RecyclerView.Adapter<IItemAdapter.ViewHolder> 
     public void setProduct(int position, Product product) {
         listProducts.set(position, product);
         notifyDataSetChanged();
+    }
+
+    public void deleteItem(int position) {
+        listItems.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(0, getItemCount());
+    }
+
+    public void deleteItem(IItem item) {
+        int index = -1;
+
+        for (int i = 0; i < listItems.size(); i++) {
+            IItem iItem = listItems.get(i);
+
+            if (iItem.getId() == item.getId()) {
+                index = i;
+            }
+        }
+
+        if (index != -1) {
+            listItems.remove(index);
+            notifyItemRemoved(index);
+            notifyItemRangeChanged(0, getItemCount());
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -259,17 +295,12 @@ public class IItemAdapter extends RecyclerView.Adapter<IItemAdapter.ViewHolder> 
         });
 
         holder.layoutDelete.setOnClickListener(v -> {
-            int timestamp = (int) (System.currentTimeMillis()/1000L);
-
-            ListModel.updateUpdatedAtById(context, item.getListId(), timestamp);
-            ItemModel.delete(context, item);
             listItems.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, getItemCount()-1);
             Toast.makeText(context, "Удалено", Toast.LENGTH_LONG).show();
 
-            ((InfoView) context).updateSummary();
-            ((InfoView) context).setUpdatedTimestamp(timestamp);
+            ((InfoView) context).deleteItem(item, position);
         });
 
         if (positionOpened == position) {

@@ -193,7 +193,7 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
                     .setTitle(R.string.deleting)
                     .setMessage(R.string.deleting_message)
                     .setPositiveButton(R.string.yes, (dialog, which) -> {
-                        ListModel.deleteById(this, list.getId());
+                        ListModel.deleteTemporarily(this, list);
                         setResult(App.RESULT_DELETE, intent);
                         finish();
                     })

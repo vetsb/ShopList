@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <com.daimajia.swipe.SwipeLayout
+        style="@style/AutoHeight"
+        android:id="@+id/swipeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:id="@+id/controls">
+            <LinearLayout
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:id="@+id/layoutEdit"
+                android:clickable="true"
+                android:gravity="center"
+                android:focusable="true"
+                android:background="@drawable/edit_background">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="ContentDescription"
+                    android:src="@drawable/edit"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:id="@+id/layoutDelete"
+                android:clickable="true"
+                android:gravity="center"
+                android:focusable="true"
+                android:background="@drawable/delete_background">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="ContentDescription"
+                    android:src="@drawable/delete"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/AutoHeight"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/container"
+                style="@style/AutoHeight"
+                android:orientation="vertical"
+                android:paddingTop="13dp"
+                android:paddingBottom="15dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:background="@drawable/item_background">
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    style="@style/AutoHeight"
+                    android:textSize="18sp"
+                    android:textColor="#000000"
+                    tools:text="Аптека"/>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/viewLine"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#CDCDCD"/>
+        </LinearLayout>
+    </com.daimajia.swipe.SwipeLayout>
+</LinearLayout>

@@ -19,8 +19,14 @@ public interface IListDao {
     @Query("SELECT COUNT(*) FROM IList")
     int getSize();
 
-    @Query("SELECT * FROM IList ORDER BY id DESC")
+    @Query("SELECT * FROM IList WHERE IList.isDeleted=0 ORDER BY id DESC")
     List<IListWithItems> getWithItems();
+
+    @Query("SELECT * FROM IList WHERE IList.isDeleted=1 ORDER BY id DESC")
+    List<IListWithItems> getDeletedWithItems();
+
+    @Query("SELECT * FROM IList WHERE isDeleted=1 ORDER BY id DESC")
+    List<IList> getDeleted();
 
     @Query("SELECT * FROM IList WHERE id=:id LIMIT 1")
     IListWithItems getWithItemsById(int id);
@@ -48,4 +54,10 @@ public interface IListDao {
 
     @Query("SELECT * FROM IList WHERE shopId=:shopId ORDER BY id")
     List<IList> getByShopId(int shopId);
+
+    @Query("UPDATE IList SET isDeleted=1 WHERE id=:id")
+    void deleteTemporarily(int id);
+
+    @Query("UPDATE IList SET isDeleted=0 WHERE id=:id")
+    void restore(int id);
 }

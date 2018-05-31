@@ -39,7 +39,7 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditItemVi
     EditItemPresenter presenter;
 
     @BindView(R.id.toolbar)
-    Toolbar toolbar1;
+    Toolbar toolbar;
     @BindView(R.id.etTitle)
     EditText etTitle;
     @BindView(R.id.spinnerCategory)
@@ -169,7 +169,7 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditItemVi
 
         etNote.setText(item.getNote());
 
-        setSupportActionBar(toolbar1);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
     }

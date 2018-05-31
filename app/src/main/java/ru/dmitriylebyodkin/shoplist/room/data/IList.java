@@ -8,17 +8,12 @@ import org.parceler.Parcel;
 @Parcel
 @Entity
 public class IList {
-    public static final String[] SORTING_TYPES = new String[] {
-            "По алфавиту",
-            "По категориям",
-            "По мере добавления"
-    };
-
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String title;
     private int shopId;
     private boolean isCompleted = false;
+    private boolean isDeleted = false;
     private int countExecutions;
     private int timestampNotification;
     private int sortingType = 2;
@@ -55,6 +50,14 @@ public class IList {
 
     public void setCompleted(boolean completed) {
         isCompleted = completed;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     public int getCountExecutions() {

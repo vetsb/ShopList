@@ -87,4 +87,8 @@ public interface InfoView extends MvpView {
     void setShop(Shop shop);
 
     void setUpdatedTimestamp(int timestamp);
+
+    void deleteItem(IItem item, int position);
+
+    void deleteAdapterItem(IItem item, int position);
 }

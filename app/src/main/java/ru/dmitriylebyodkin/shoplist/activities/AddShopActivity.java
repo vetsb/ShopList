@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,9 +66,9 @@ public class AddShopActivity extends MvpAppCompatActivity implements AddShopView
         shopId = iListWithItems.getList().getShopId();
 
         alertDialog = new AlertDialog.Builder(this)
-                .setTitle("Включить геолокацию?")
-                .setMessage("Включите геолокацию для нахождения магазинов поблизости.")
-                .setPositiveButton(R.string.yes, (dialog, which) -> startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                .setTitle(R.string.location_dialog_title)
+                .setMessage(R.string.location_dialog_message)
+                .setPositiveButton(R.string.yes, (dialog, which) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
                 .setNegativeButton(R.string.no, (dialog, which) -> {
                     dialog.dismiss();
                     setResult(RESULT_CANCELED, intent);
@@ -119,6 +121,7 @@ public class AddShopActivity extends MvpAppCompatActivity implements AddShopView
 
     @Override
     public void finishAdd() {
+        shopAdapter.finishAdd();
         isFound = true;
     }
 

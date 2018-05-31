@@ -12,7 +12,6 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:id="@+id/controls">
-
             <LinearLayout
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
@@ -20,7 +19,7 @@
                 android:clickable="true"
                 android:gravity="center"
                 android:focusable="true"
-                android:background="@color/colorPrimary">
+                android:background="@drawable/edit_background">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -36,7 +35,7 @@
                 android:clickable="true"
                 android:gravity="center"
                 android:focusable="true"
-                android:background="@color/red">
+                android:background="@drawable/delete_background">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -70,7 +69,7 @@
                     android:textSize="16sp"
                     android:lineSpacingExtra="6dp"
                     android:textColor="#676767"
-                    android:layout_marginBottom="15dp"
+                    android:layout_marginBottom="10dp"
                     tools:text="Торт, свечи, шампанское, лаваш, огурец, помидор, майонез, картофель, сельдь"/>
 
                 <TextView
@@ -79,6 +78,39 @@
                     android:textSize="12sp"
                     android:textColor="#A8A8A8"
                     tools:text="изменен сегодня в 23:40"/>
+
+                <LinearLayout
+                    style="@style/AutoHeight"
+                    android:id="@+id/layoutSettings"
+                    android:layout_marginTop="4dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvRestore"
+                        android:text="@string/restore"
+                        android:textAllCaps="true"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_marginEnd="25dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvDelete"
+                        android:text="@string/delete"
+                        android:textAllCaps="true"
+                        android:textColor="@color/red"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </LinearLayout>
             </LinearLayout>
 
             <View

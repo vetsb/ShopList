@@ -1,6 +1,7 @@
 package ru.dmitriylebyodkin.shoplist.presenters;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -18,14 +19,12 @@ import ru.dmitriylebyodkin.shoplist.views.ListsView;
 
 @InjectViewState
 public class ListsPresenter extends MvpPresenter<ListsView> {
-    private static final String TAG = "myLogs";
-
     public void init(Context context) {
         List<IListWithItems> list = ListModel.getWithItems(context);
         List<IItem> itemList;
 
         if (list == null || list.size() == 0) {
-            getViewState().showLayoutNotItems();
+            getViewState().showNoItems();
         } else {
             for (int i = 0; i < list.size(); i++) {
                 itemList = list.get(i).getItems();
@@ -79,5 +78,13 @@ public class ListsPresenter extends MvpPresenter<ListsView> {
 
     public void setProducts(List<Product> productList) {
         getViewState().setAdapterProducts(productList);
+    }
+
+    public void hideNoItems() {
+        getViewState().hideNoItems();
+    }
+
+    public void showNoItems() {
+        getViewState().showNoItems();
     }
 }

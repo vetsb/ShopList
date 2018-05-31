@@ -24,41 +24,45 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activities.InfoActivity"
             android:label="@string/list_activity_title"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.EditItemActivity"
             android:label="@string/edit_item_activity_title"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".activities.EditListActivity"
             android:label="@string/edit_list_activity_title"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.AddShopActivity"
             android:label="@string/add_shop_activity_title"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.MapActivity"
             android:label="@string/map"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBCrTw3PJxlCAnHYfi7ZlX4ze4zWZEvh7I"/>
+            android:value="AIzaSyBCrTw3PJxlCAnHYfi7ZlX4ze4zWZEvh7I" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <receiver
             android:name=".notifications.TimeNotification"
             android:enabled="true"
             android:exported="true"
-            tools:ignore="ExportedReceiver">
-        </receiver>
+            tools:ignore="ExportedReceiver"></receiver>
+
     </application>
+
 </manifest>
