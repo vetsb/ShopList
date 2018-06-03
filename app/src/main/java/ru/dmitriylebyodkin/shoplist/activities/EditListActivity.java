@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +23,6 @@ import org.parceler.Parcels;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,6 +48,8 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
 
     @BindView(R.id.etTitle)
     EditText etTitle;
+    @BindView(R.id.etNote)
+    EditText etNote;
     @BindView(R.id.tvShop)
     TextView tvShop;
     @BindView(R.id.tvDate)
@@ -65,7 +65,7 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
     private IListWithItems iListWithItems;
     private boolean hasChanges = false;
     private IList list;
-    private String title;
+    private String title, note;
     private int timestampNotification;
 
     @Override
@@ -79,16 +79,20 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
         iListWithItems = Parcels.unwrap(intent.getParcelableExtra("list"));
         list = iListWithItems.getList();
 
-        title = list.getTitle();
+        title = list.getTitle() == null ? "" : list.getTitle();
+        note = list.getNote() == null ? "" : list.getNote();
         timestampNotification = list.getTimestampNotification();
 
-        etTitle.setText(list.getTitle());
-        etTitle.setSelection(list.getTitle().length());
+        etTitle.setText(title);
+        etTitle.setSelection(title.length());
         etTitle.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus && etTitle.getText().toString().trim().equals("")) {
                 etTitle.setText(title);
             }
         });
+
+        etNote.setText(note);
+        etNote.setSelection(note.length());
 
         Shop shop = ShopModel.getById(this, list.getShopId());
 
@@ -163,6 +167,12 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
             }
 
             list.setTitle(etTitle.getText().toString().trim());
+            list.setNote(etNote.getText().toString().trim());
+            iListWithItems.setList(list);
+
+            Log.d(TAG, "onBackPressed: " + note);
+            Log.d(TAG, "onBackPressed: " + list.getNote());
+
             iListWithItems.setList(list);
 
             Intent alarmIntent = new Intent(this, TimeNotification.class);
@@ -217,16 +227,17 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
         }
 
         list.setTitle(etTitle.getText().toString().trim());
+        list.setNote(etNote.getText().toString().trim());
         iListWithItems.setList(list);
 
-        if (!title.equals(list.getTitle())) {
+        if (!title.equals(list.getTitle()) || !note.equals(list.getNote())) {
             hasChanges = true;
         }
 
         if (hasChanges) {
             AlertDialog alertDialog = new AlertDialog.Builder(this)
                     .setTitle(R.string.saving_changes)
-                    .setMessage("Вы хотите сохранить изменения?")
+                    .setMessage(R.string.do_you_want_save_changes)
                     .setPositiveButton(R.string.yes, (dialog, which) -> {
                         list.setUpdatedAt((int) (System.currentTimeMillis()/1000L));
                         ListModel.update(this, list);

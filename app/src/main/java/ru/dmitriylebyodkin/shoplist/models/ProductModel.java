@@ -1,7 +1,6 @@
 package ru.dmitriylebyodkin.shoplist.models;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 
 import java.util.List;
 
@@ -36,5 +35,13 @@ public class ProductModel {
 
     public static Product getById(Context context, int productId) {
         return getDao(context).getById(productId);
+    }
+
+    public static List<Product> getAllDesc(Context context) {
+        return getDao(context).getAllDesc();
+    }
+
+    public static List<Product> getAllDescByCategoryId(Context context, int categoryId) {
+        return getDao(context).getAllDescByCategoryId(categoryId);
     }
 }

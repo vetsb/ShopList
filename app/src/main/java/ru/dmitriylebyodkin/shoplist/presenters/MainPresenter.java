@@ -8,6 +8,7 @@ import com.arellomobile.mvp.MvpPresenter;
 import java.util.List;
 
 import ru.dmitriylebyodkin.shoplist.models.ListModel;
+import ru.dmitriylebyodkin.shoplist.models.ProductModel;
 import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;

@@ -33,6 +33,9 @@
                 android:textColor="#8F8F8F"
                 style="@style/AutoHeight"
                 tools:text="ул. Ленина, 1, Санкт-Петербург, Россия"/>
+
+            <!--<TextView-->
+                <!--android:id="@+id/"/>-->
         </LinearLayout>
 
         <ImageButton

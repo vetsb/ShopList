@@ -17,6 +17,7 @@ public class IList {
     private int countExecutions;
     private int timestampNotification;
     private int sortingType = 2;
+    private String note;
     private int createdAt = (int) (System.currentTimeMillis()/1000L);
     private int updatedAt;
 
@@ -82,6 +83,14 @@ public class IList {
 
     public void setSortingType(int sortingType) {
         this.sortingType = sortingType;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public int getCreatedAt() {

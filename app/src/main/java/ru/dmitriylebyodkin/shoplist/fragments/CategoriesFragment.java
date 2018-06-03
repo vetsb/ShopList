@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -24,12 +25,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ru.dmitriylebyodkin.shoplist.R;
 import ru.dmitriylebyodkin.shoplist.adapters.CategoryAdapter;
+import ru.dmitriylebyodkin.shoplist.models.CategoryModel;
 import ru.dmitriylebyodkin.shoplist.presenters.CategoriesPresenter;
 import ru.dmitriylebyodkin.shoplist.room.data.Category;
 import ru.dmitriylebyodkin.shoplist.views.CategoriesView;
 
 public class CategoriesFragment extends MvpAppCompatFragment implements CategoriesView {
 
+    private static final String TAG = "myLogs";
     @InjectPresenter
     CategoriesPresenter presenter;
 
@@ -58,6 +61,17 @@ public class CategoriesFragment extends MvpAppCompatFragment implements Categori
     public void createCategory(View v) {
         View view = getLayoutInflater().inflate(R.layout.dialog_create_list, null);
         EditText etTitle = view.findViewById(R.id.etTitle);
+
+        String categoryTitle = getString(R.string.new_category);
+
+        int categoryCount = CategoryModel.getContainsCount(getContext(), categoryTitle);
+
+        if (categoryCount > 0) {
+            categoryTitle += " " + String.valueOf(categoryCount+1);
+        }
+
+        etTitle.setText(categoryTitle);
+        etTitle.setSelection(0, categoryTitle.length());
 
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                 .setView(view)
@@ -172,6 +186,8 @@ public class CategoriesFragment extends MvpAppCompatFragment implements Categori
         if (adapter.getItemCount() == 0) {
             presenter.showNoItems();
         }
+
+        Toast.makeText(getActivity(), R.string.is_removed, Toast.LENGTH_LONG).show();
     }
 
     @Override

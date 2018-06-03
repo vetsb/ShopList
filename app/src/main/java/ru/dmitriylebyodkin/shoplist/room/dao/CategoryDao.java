@@ -23,4 +23,10 @@ public interface CategoryDao {
 
     @Delete
     void delete(Category... categories);
+
+    @Query("SELECT * FROM Category WHERE title LIKE '%' || :text || '%' ORDER BY id")
+    List<Category> getContains(String text);
+
+    @Query("SELECT COUNT(*) FROM Category WHERE title LIKE '%' || :text || '%'")
+    int getContainsCount(String text);
 }

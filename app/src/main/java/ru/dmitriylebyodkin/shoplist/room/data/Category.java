@@ -3,6 +3,9 @@ package ru.dmitriylebyodkin.shoplist.room.data;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import org.parceler.Parcel;
+
+@Parcel
 @Entity
 public class Category {
     @PrimaryKey(autoGenerate = true)

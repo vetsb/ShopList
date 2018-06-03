@@ -36,4 +36,6 @@ public interface MainView extends MvpView {
     void showCategoryDeleteDialog(Category category, int position);
 
     void showListDeleteDialog(IList list, int position);
+
+    void showProductDeleteDialog(Product product, int position);
 }

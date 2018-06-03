@@ -62,4 +62,10 @@
     <string name="new_category">Новая категория</string>
     <string name="location_dialog_title">Включить геолокацию?</string>
     <string name="location_dialog_message">Включите геолокацию для нахождения магазинов поблизости.</string>
+    <string name="deleting_message_product">Вы действительно хотите удалить этот товар?</string>
+    <string name="want_add_this_product">Вы хотите добавить этот элемент?</string>
+    <string name="add_product_activity">Новый товар</string>
+    <string name="add">Создать</string>
+    <string name="do_you_want_save_changes">Вы хотите сохранить изменения?</string>
+    <string name="products_activity_title">Категория</string>
 </resources>

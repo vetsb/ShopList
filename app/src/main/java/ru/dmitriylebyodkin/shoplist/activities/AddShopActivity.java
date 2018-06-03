@@ -147,7 +147,7 @@ public class AddShopActivity extends MvpAppCompatActivity implements AddShopView
     public void onResume() {
         super.onResume();
 
-        if (isLocationServicesEnabled()) {
+        if (shopId != 0 || isLocationServicesEnabled()) {
             if (!isFound) {
                 presenter.init(this, shopId);
             }

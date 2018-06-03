@@ -1,6 +1,7 @@
 package ru.dmitriylebyodkin.shoplist.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,11 +10,15 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.parceler.Parcels;
+
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.dmitriylebyodkin.shoplist.R;
+import ru.dmitriylebyodkin.shoplist.activities.MainActivity;
+import ru.dmitriylebyodkin.shoplist.activities.ProductsActivity;
 import ru.dmitriylebyodkin.shoplist.room.data.Category;
 import ru.dmitriylebyodkin.shoplist.views.MainView;
 
@@ -37,6 +42,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         Category category = categoryList.get(position);
 
         holder.tvTitle.setText(category.getTitle());
+        holder.container.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ProductsActivity.class);
+            intent.putExtra("category", Parcels.wrap(category));
+            ((MainActivity) context).startActivityForResult(intent, MainActivity.LIST_PRODUCTS_CODE);
+        });
         holder.layoutEdit.setOnClickListener(v -> ((MainView) context).showCategoryEditDialog(category, position));
         holder.layoutDelete.setOnClickListener(v -> ((MainView) context).showCategoryDeleteDialog(category, position));
     }
@@ -64,6 +74,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.container)
+        LinearLayout container;
+
         @BindView(R.id.tvTitle)
         TextView tvTitle;
 

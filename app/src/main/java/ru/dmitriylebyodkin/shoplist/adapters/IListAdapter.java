@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -263,6 +264,7 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
              * Дата изменения
              */
             int timestampUpdated = list.getUpdatedAt();
+            int timestampCurrent = (int) (System.currentTimeMillis()/1000L);
             String updatedText = "изменен ";
 
             if (timestampUpdated == 0) {
@@ -270,27 +272,45 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
                 timestampUpdated = list.getCreatedAt();
             }
 
+            SimpleDateFormat sdf;
+//
+//            if (timestampCurrent - timestampUpdated < 60*60*24) {
+//                updatedText += "сегодня";
+//            } else if (timestampCurrent - timestampUpdated >= 60*60*24 && timestampCurrent - timestampUpdated < 60*60*24*2) {
+//                updatedText += "вчера";
+//            } else {
+//                sdf = new SimpleDateFormat("dd MMMM YYYY", App.getRussianLocale());
+//                updatedText += sdf.format(new Date(timestampCurrent*1000L));
+//            }
+//
+//            sdf = new SimpleDateFormat("HH:mm");
+//            updatedText += " в " + sdf.format(new Date(timestampUpdated*1000L));
+//
+//            holder.tvUpdatedAt.setText(updatedText);
+
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(timestampUpdated*1000L);
-
             calendar.set(Calendar.HOUR_OF_DAY, 0);
             calendar.set(Calendar.HOUR, 0);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
+            calendar.set(Calendar.AM_PM, Calendar.AM);
 
             int timestampUpdatedDay = (int) (calendar.getTimeInMillis()/1000L);
-            int timestampToday;
+
 
             calendar.setTimeInMillis(System.currentTimeMillis());
-
             calendar.set(Calendar.HOUR_OF_DAY, 0);
             calendar.set(Calendar.HOUR, 0);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
+            calendar.set(Calendar.AM_PM, Calendar.AM);
 
-            timestampToday = (int) (calendar.getTimeInMillis()/1000L);
+            int timestampToday = (int) (calendar.getTimeInMillis()/1000L);
+
+            sdf = new SimpleDateFormat("dd MMMM YYYY HH:mm:ss", App.getRussianLocale());
 
             if (timestampUpdatedDay == timestampToday) {
                 updatedText += "сегодня";
@@ -299,11 +319,11 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
             } else if (timestampToday - timestampUpdatedDay == 60*60*24*2) {
                 updatedText += "позавчера";
             } else {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM YYYY", App.getRussianLocale());
+                sdf = new SimpleDateFormat("dd MMMM YYYY", App.getRussianLocale());
                 updatedText += sdf.format(new Date(timestampUpdatedDay*1000L)) + " ";
             }
 
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            sdf = new SimpleDateFormat("HH:mm");
             updatedText += " в " + sdf.format(new Date(timestampUpdated*1000L));
 
             holder.tvUpdatedAt.setText(updatedText);

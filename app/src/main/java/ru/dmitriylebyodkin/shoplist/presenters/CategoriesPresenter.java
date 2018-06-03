@@ -1,6 +1,5 @@
 package ru.dmitriylebyodkin.shoplist.presenters;
 
-import android.app.AlertDialog;
 import android.content.Context;
 
 import com.arellomobile.mvp.InjectViewState;

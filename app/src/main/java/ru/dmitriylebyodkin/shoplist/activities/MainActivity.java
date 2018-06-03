@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
@@ -22,6 +23,7 @@ import ru.dmitriylebyodkin.shoplist.R;
 import ru.dmitriylebyodkin.shoplist.fragments.CartFragment;
 import ru.dmitriylebyodkin.shoplist.fragments.CategoriesFragment;
 import ru.dmitriylebyodkin.shoplist.fragments.ListsFragment;
+import ru.dmitriylebyodkin.shoplist.fragments.ProductsFragment;
 import ru.dmitriylebyodkin.shoplist.models.ProductModel;
 import ru.dmitriylebyodkin.shoplist.presenters.MainPresenter;
 import ru.dmitriylebyodkin.shoplist.room.data.Category;
@@ -35,6 +37,9 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     private static final String TAG = "myLogs";
     public static final int LIST_ACTIVITY_CODE = 1;
     public static final int EDIT_LIST_ACTIVITY_CODE = 2;
+    public static final int EDIT_PRODUCT_CODE = 3;
+    public static final int ADD_PRODUCT_CODE = 4;
+    public static final int LIST_PRODUCTS_CODE = 5;
 
     @InjectPresenter
     MainPresenter presenter;
@@ -43,8 +48,9 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     BottomNavigationBar bottomNavigation;
 
     private ListsFragment listsFragment;
-    private CartFragment cartFragment;
+    private ProductsFragment productsFragment;
     private CategoriesFragment categoriesFragment;
+    private CartFragment cartFragment;
     private FragmentManager fragmentManager;
 
     @Override
@@ -71,8 +77,11 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         listsFragment = new ListsFragment();
         listsFragment.setProducts(productList);
 
+        productsFragment = new ProductsFragment();
+
         cartFragment = new CartFragment();
         cartFragment.setProducts(productList);
+
 
         categoriesFragment = new CategoriesFragment();
 
@@ -94,6 +103,10 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                                 .commit();
                         break;
                     case 1:
+                        title = getString(R.string.products);
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.frameLayout, productsFragment)
+                                .commit();
                         break;
                     case 2:
                         title = getString(R.string.categories);
@@ -176,7 +189,30 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                     listsFragment.removeAdapterItem(position);
                 }
             }
+        }
 
+        if (requestCode == EDIT_PRODUCT_CODE) {
+            if (resultCode == RESULT_OK) {
+                int position = data.getIntExtra("position", -1);
+                Product product = Parcels.unwrap(data.getParcelableExtra("product"));
+
+                if (position != -1) {
+                    productsFragment.update(product, position);
+                }
+            }
+        }
+
+        if (requestCode == ADD_PRODUCT_CODE) {
+            if (resultCode == RESULT_OK) {
+                Product product = Parcels.unwrap(data.getParcelableExtra("product"));
+                productsFragment.insert(product);
+            }
+        }
+
+        if (requestCode == LIST_PRODUCTS_CODE) {
+            if (resultCode == RESULT_OK) {
+                productsFragment.updateList();
+            }
         }
     }
 
@@ -251,5 +287,10 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                 .create();
 
         alertDialog.show();
+    }
+
+    @Override
+    public void showProductDeleteDialog(Product product, int position) {
+        productsFragment.showDeleteDialog(product, position);
     }
 }

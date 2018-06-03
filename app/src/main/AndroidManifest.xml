@@ -61,8 +61,17 @@
             android:name=".notifications.TimeNotification"
             android:enabled="true"
             android:exported="true"
-            tools:ignore="ExportedReceiver"></receiver>
+            tools:ignore="ExportedReceiver" />
 
+        <activity
+            android:name=".activities.AddProductActivity"
+            android:label="@string/add_product_activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".activities.ProductsActivity"
+            android:label="@string/products_activity_title"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

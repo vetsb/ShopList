@@ -28,4 +28,12 @@ public class CategoryModel {
     public static void delete(Context context, Category category) {
         getDao(context).delete(category);
     }
+
+    public static List<Category> getContains(Context context, String text) {
+        return getDao(context).getContains(text);
+    }
+
+    public static int getContainsCount(Context context, String text) {
+        return getDao(context).getContainsCount(text);
+    }
 }

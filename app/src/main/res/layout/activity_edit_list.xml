@@ -38,7 +38,24 @@
             android:gravity="center_vertical"
             android:textSize="16sp"
             style="@android:style/Widget.Material.Spinner.Underlined"
-            android:layout_marginBottom="5dp"/>
+            android:layout_marginBottom="15dp"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:gravity="top"
+                style="@style/EditText"
+                android:id="@+id/etNote"
+                android:hint="@string/note"
+                tools:ignore="LabelFor"
+                android:inputType="textCapWords|textMultiLine"/>
+        </android.support.design.widget.TextInputLayout>
 
         <TextView
             style="@style/EditTextLabel"
