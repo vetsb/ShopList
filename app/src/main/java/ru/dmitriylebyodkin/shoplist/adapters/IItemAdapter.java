@@ -29,7 +29,6 @@ import ru.dmitriylebyodkin.shoplist.R;
 import ru.dmitriylebyodkin.shoplist.activities.EditItemActivity;
 import ru.dmitriylebyodkin.shoplist.activities.InfoActivity;
 import ru.dmitriylebyodkin.shoplist.models.ItemModel;
-import ru.dmitriylebyodkin.shoplist.models.UnitModel;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
 import ru.dmitriylebyodkin.shoplist.room.data.Unit;

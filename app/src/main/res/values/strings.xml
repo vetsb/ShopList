@@ -14,7 +14,6 @@
     <string name="unit">Единица измерения</string>
     <string name="not_selected_m">Не выбран</string>
     <string name="not_selected_w">Не выбрана</string>
-    <string name="not_selected_s">Не выбрано</string>
     <string name="is_removed">Удалено</string>
     <string name="shop">Магазин</string>
     <string name="reminder">Напоминание</string>
@@ -22,7 +21,6 @@
     <string name="time">Время</string>
     <string name="delete">Удалить</string>
     <string name="saving_changes">Сохранение изменений</string>
-    <string name="not_save">Не сохранять</string>
     <string name="no">Нет</string>
     <string name="yes">Да</string>
     <string name="deleting">Удаление</string>
@@ -31,7 +29,6 @@
     <string name="edit_list_activity_title">Редактирование списка</string>
     <string name="list_activity_title">Список</string>
     <string name="edit_item_activity_title">Редактирование товара</string>
-    <string name="shops">Магазины</string>
     <string name="map">Карта</string>
     <string name="add_shop_activity_title">Магазины</string>
     <string name="sorting">Сортировка</string>
@@ -39,15 +36,12 @@
     <string name="alphabetizing">По алфавиту</string>
     <string name="sorting_by_category">По категориям</string>
     <string name="sorting_as_you_add">По мере добавления</string>
-    <string name="list">Список</string>
     <string name="settings">Настройки</string>
     <string name="search">Поиск</string>
-    <string name="new_list">Новый список</string>
     <string name="spent">Потрачено:</string>
     <string name="left">Осталось:</string>
     <string name="without_category">Без категории</string>
     <string name="lists">Списки</string>
-    <string name="patterns">Шаблоны</string>
     <string name="products">Товары</string>
     <string name="categories">Категории</string>
     <string name="trash">Корзина</string>
@@ -55,7 +49,6 @@
     <string name="is_restore">Восстановлен</string>
     <string name="no_lists">Ещё нет ни одного списка</string>
     <string name="empty_cart">Корзина пуста</string>
-    <string name="edit">Изменить</string>
     <string name="deleting_message_category">Вы уверены, что хотите удалить?\n\nВсе товары этой категории будут без категории.</string>
     <string name="editing_category">Редактирование категории</string>
     <string name="no_categories">Ещё нет ни одной категории</string>
@@ -63,7 +56,6 @@
     <string name="location_dialog_title">Включить геолокацию?</string>
     <string name="location_dialog_message">Включите геолокацию для нахождения магазинов поблизости.</string>
     <string name="deleting_message_product">Вы действительно хотите удалить этот товар?</string>
-    <string name="want_add_this_product">Вы хотите добавить этот элемент?</string>
     <string name="add_product_activity">Новый товар</string>
     <string name="add">Создать</string>
     <string name="do_you_want_save_changes">Вы хотите сохранить изменения?</string>

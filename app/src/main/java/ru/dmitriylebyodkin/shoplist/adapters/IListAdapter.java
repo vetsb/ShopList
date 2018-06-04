@@ -2,10 +2,9 @@ package ru.dmitriylebyodkin.shoplist.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +33,6 @@ import ru.dmitriylebyodkin.shoplist.room.data.IItem;
 import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
-import ru.dmitriylebyodkin.shoplist.views.CartView;
-import ru.dmitriylebyodkin.shoplist.views.ListsView;
 import ru.dmitriylebyodkin.shoplist.views.MainView;
 
 public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> {
@@ -190,7 +187,7 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
         });
 
         if (listWithItems.getList().isDeleted()) {
-            holder.container.setBackgroundColor(context.getResources().getColor(R.color.whitePrimary));
+            holder.container.setBackgroundColor(Color.WHITE);
         } else {
             holder.container.setOnClickListener(v -> {
                 Intent intent = new Intent(context, InfoActivity.class);
@@ -310,8 +307,6 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
 
             int timestampToday = (int) (calendar.getTimeInMillis()/1000L);
 
-            sdf = new SimpleDateFormat("dd MMMM YYYY HH:mm:ss", App.getRussianLocale());
-
             if (timestampUpdatedDay == timestampToday) {
                 updatedText += "сегодня";
             } else if (timestampToday - timestampUpdatedDay == 60*60*24) {
@@ -332,10 +327,6 @@ public class IListAdapter extends RecyclerView.Adapter<IListAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        if (data == null) {
-            return 0;
-        }
-
-        return data.size();
+        return data == null ? 0 : data.size();
     }
 }

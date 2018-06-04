@@ -2,8 +2,6 @@ package ru.dmitriylebyodkin.shoplist.services.Data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.google.maps.model.Geometry;
-import com.google.maps.model.OpeningHours;
 
 import java.util.List;
 

@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import org.parceler.Parcels;
 
@@ -23,12 +22,6 @@ public class TimeNotification extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "onReceive extras: " + intent.getExtras());
-
-        for (String key: intent.getExtras().keySet()) {
-            Log.d(TAG, "onReceive " + key + ": " + intent.getExtras().get(key));
-        }
-
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         String NOTIFICATION_CHANNEL_ID = "shoplist_channel";
 
@@ -56,8 +49,6 @@ public class TimeNotification extends BroadcastReceiver {
                 .setTicker(context.getString(R.string.notification_ticker))
                 .setSmallIcon(R.drawable.check)
                 .setContentTitle("Список покупок");
-
-        Log.d(TAG, "onReceive: " + listWithItems);
 
         if (listWithItems == null) {
             notificationBuilder.setContentText("Купить список");

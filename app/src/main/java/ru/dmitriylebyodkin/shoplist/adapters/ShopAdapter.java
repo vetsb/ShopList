@@ -23,7 +23,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.dmitriylebyodkin.shoplist.R;
 import ru.dmitriylebyodkin.shoplist.activities.AddShopActivity;
-import ru.dmitriylebyodkin.shoplist.activities.InfoActivity;
 import ru.dmitriylebyodkin.shoplist.activities.MapActivity;
 import ru.dmitriylebyodkin.shoplist.room.data.Shop;
 
@@ -140,11 +139,7 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ViewHolder> im
 
     @Override
     public int getItemCount() {
-        if (shopList == null) {
-            return 0;
-        }
-
-        return shopList.size();
+        return shopList == null ? 0 : shopList.size();
     }
 
     private void setColorSelected(@NonNull ViewHolder holder) {

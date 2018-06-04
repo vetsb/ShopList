@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -158,8 +157,6 @@ public class AddProductActivity extends MvpAppCompatActivity implements EditItem
         getSupportActionBar().setTitle("");
 
         presenter.init(this, product);
-
-        Log.d(TAG, "onCreate category id: " + product.getCategoryId());
     }
 
     @Override

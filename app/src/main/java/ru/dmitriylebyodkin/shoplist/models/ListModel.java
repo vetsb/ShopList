@@ -4,9 +4,6 @@ import android.content.Context;
 
 import java.util.List;
 
-import ru.dmitriylebyodkin.shoplist.activities.EditItemActivity;
-import ru.dmitriylebyodkin.shoplist.activities.EditListActivity;
-import ru.dmitriylebyodkin.shoplist.activities.MainActivity;
 import ru.dmitriylebyodkin.shoplist.room.RoomDb;
 import ru.dmitriylebyodkin.shoplist.room.dao.IListDao;
 import ru.dmitriylebyodkin.shoplist.room.data.IList;

@@ -2,7 +2,6 @@ package ru.dmitriylebyodkin.shoplist.presenters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.view.View;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.InjectViewState;
@@ -16,7 +15,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import ru.dmitriylebyodkin.shoplist.App;
-import ru.dmitriylebyodkin.shoplist.activities.AddShopActivity;
 import ru.dmitriylebyodkin.shoplist.models.ListModel;
 import ru.dmitriylebyodkin.shoplist.models.PlaceSearchModel;
 import ru.dmitriylebyodkin.shoplist.models.ShopModel;

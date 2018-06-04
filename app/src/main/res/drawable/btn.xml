@@ -1,16 +1,49 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:state_enabled="false"
-        android:drawable="@drawable/btn_disabled" />
+        android:state_enabled="false">
+        <shape>
+            <solid android:color="#5F5F5F" />
+            <corners android:radius="25dp" />
+        </shape>
+    </item>
     <item
         android:state_pressed="true"
-        android:state_enabled="true"
-        android:drawable="@drawable/btn_pressed" />
+        android:state_enabled="true">
+        <shape>
+            <solid android:color="#298DB1" />
+            <corners android:radius="25dp" />
+        </shape>
+    </item>
     <item
         android:state_focused="true"
-        android:state_enabled="true"
-        android:drawable="@drawable/btn_focused" />
+        android:state_enabled="true">
+        <shape>
+            <solid android:color="#298DB1" />
+            <corners android:radius="25dp" />
+        </shape>
+    </item>
     <item
-        android:state_enabled="true"
-        android:drawable="@drawable/btn_normal" />
+        android:state_enabled="true">
+        <shape>
+            <solid android:color="#30ADD9" />
+            <corners android:radius="25dp" />
+        </shape>
+    </item>
 </selector>
+
+<!--<selector xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--<item-->
+    <!--android:state_enabled="false"-->
+    <!--android:drawable="@drawable/btn_disabled" />-->
+<!--<item-->
+    <!--android:state_pressed="true"-->
+    <!--android:state_enabled="true"-->
+    <!--android:drawable="@drawable/btn_pressed" />-->
+<!--<item-->
+    <!--android:state_focused="true"-->
+    <!--android:state_enabled="true"-->
+    <!--android:drawable="@drawable/btn_focused" />-->
+<!--<item-->
+    <!--android:state_enabled="true"-->
+    <!--android:drawable="@drawable/btn_normal" />-->
+<!--</selector>-->

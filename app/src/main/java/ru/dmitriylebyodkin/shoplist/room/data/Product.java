@@ -8,20 +8,6 @@ import org.parceler.Parcel;
 @Parcel
 @Entity
 public class Product {
-    public final static String[] UNITS = new String[]{
-            "шт",
-            "гр",
-            "кг",
-            "мл",
-            "л",
-            "бут",
-            "упак",
-            "банка",
-            "пакет",
-            "метр",
-            "пара"
-    };
-
     @PrimaryKey(autoGenerate = true)
     private int id;
     private int categoryId;

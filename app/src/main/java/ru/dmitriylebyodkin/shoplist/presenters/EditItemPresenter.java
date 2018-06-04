@@ -1,7 +1,6 @@
 package ru.dmitriylebyodkin.shoplist.presenters;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.dmitriylebyodkin.shoplist.R;
-import ru.dmitriylebyodkin.shoplist.activities.EditItemActivity;
 import ru.dmitriylebyodkin.shoplist.models.CategoryModel;
 import ru.dmitriylebyodkin.shoplist.models.ItemModel;
 import ru.dmitriylebyodkin.shoplist.models.ListModel;
@@ -37,8 +35,6 @@ public class EditItemPresenter extends MvpPresenter<EditItemView> {
 
             categories.add(context.getString(R.string.not_selected_w));
 
-            Log.d(TAG, "init id: " + product.getCategoryId());
-
             for (Category category: categoryList) {
                 categories.add(category.getTitle());
 
@@ -48,8 +44,6 @@ public class EditItemPresenter extends MvpPresenter<EditItemView> {
 
                 index++;
             }
-
-            Log.d(TAG, "init: " + categoryIndex);
 
             if (product.getCategoryId() != 0) {
                 categoryIndex++;

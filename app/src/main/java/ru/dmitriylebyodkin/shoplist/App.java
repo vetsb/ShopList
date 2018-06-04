@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -117,7 +116,7 @@ public class App extends Application {
     }
 
     public static String loadJSONFromAsset(Context context, String name) {
-        String json = null;
+        String json;
 
         try {
             InputStream is = context.getAssets().open("json/"+name+".json");

@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -170,9 +169,6 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
             list.setNote(etNote.getText().toString().trim());
             iListWithItems.setList(list);
 
-            Log.d(TAG, "onBackPressed: " + note);
-            Log.d(TAG, "onBackPressed: " + list.getNote());
-
             iListWithItems.setList(list);
 
             Intent alarmIntent = new Intent(this, TimeNotification.class);
@@ -252,9 +248,6 @@ public class EditListActivity extends MvpAppCompatActivity implements EditListVi
                         am.cancel(pendingIntent);
 
                         if (list.getTimestampNotification() != 0 && list.getTimestampNotification() != timestampNotification) {
-                            Log.d(TAG, "onBackPressed system: " + System.currentTimeMillis()/1000L);
-                            Log.d(TAG, "onBackPressed list: " + list.getTimestampNotification());
-
                             am.set(AlarmManager.RTC_WAKEUP, list.getTimestampNotification()*1000L, pendingIntent);
                         }
 

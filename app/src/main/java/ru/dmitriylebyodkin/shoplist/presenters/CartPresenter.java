@@ -1,7 +1,6 @@
 package ru.dmitriylebyodkin.shoplist.presenters;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
