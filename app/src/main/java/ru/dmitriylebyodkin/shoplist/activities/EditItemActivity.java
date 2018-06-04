@@ -25,10 +25,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.dmitriylebyodkin.shoplist.R;
+import ru.dmitriylebyodkin.shoplist.models.UnitModel;
 import ru.dmitriylebyodkin.shoplist.presenters.EditItemPresenter;
 import ru.dmitriylebyodkin.shoplist.room.data.Category;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
+import ru.dmitriylebyodkin.shoplist.room.data.Unit;
 import ru.dmitriylebyodkin.shoplist.views.EditItemView;
 
 public class EditItemActivity extends MvpAppCompatActivity implements EditItemView {
@@ -108,8 +110,6 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditItemVi
                 } else {
                     product.setCategoryId(categoryList.get(position-1).getId());
                 }
-
-                Log.d(TAG, "onItemSelected: " + product.getCategoryId());
             }
 
             @Override
@@ -153,12 +153,27 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditItemVi
         etCost.setText(String.valueOf(item.getCost()));
         etCost.setSelection(String.valueOf(item.getCost()).length());
 
-        spinnerUnit.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Product.UNITS));
-        spinnerUnit.setSelection(product.getUnit());
+        List<String> units = new ArrayList<>();
+        List<Unit> unitList = UnitModel.getAll(this);
+        int selectionId = 0;
+        int i = 0;
+
+        for (Unit unit: unitList) {
+            units.add(unit.getTitle());
+
+            if (unit.getId() == product.getUnit()) {
+                selectionId = i;
+            }
+
+            i++;
+        }
+
+        spinnerUnit.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, units));
+        spinnerUnit.setSelection(selectionId);
         spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                product.setUnit(position);
+                product.setUnit(unitList.get(position).getId());
             }
 
             @Override

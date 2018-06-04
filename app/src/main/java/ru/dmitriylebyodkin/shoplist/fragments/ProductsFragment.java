@@ -105,7 +105,6 @@ public class ProductsFragment extends MvpAppCompatFragment implements ProductsVi
             presenter.showNoItems();
         }
 
-        Toast.makeText(getActivity(), R.string.is_removed, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -135,6 +134,11 @@ public class ProductsFragment extends MvpAppCompatFragment implements ProductsVi
     @Override
     public void updateList() {
         presenter.init(getActivity(), categoryId);
+    }
+
+    @Override
+    public void showDeleteToast() {
+        Toast.makeText(getActivity(), R.string.is_removed, Toast.LENGTH_LONG).show();
     }
 
     public void setCategoryId(int categoryId) {

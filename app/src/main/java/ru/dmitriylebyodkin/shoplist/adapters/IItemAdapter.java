@@ -1,16 +1,13 @@
 package ru.dmitriylebyodkin.shoplist.adapters;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -24,8 +21,6 @@ import com.daimajia.swipe.SwipeLayout;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,10 +29,10 @@ import ru.dmitriylebyodkin.shoplist.R;
 import ru.dmitriylebyodkin.shoplist.activities.EditItemActivity;
 import ru.dmitriylebyodkin.shoplist.activities.InfoActivity;
 import ru.dmitriylebyodkin.shoplist.models.ItemModel;
-import ru.dmitriylebyodkin.shoplist.models.ListModel;
+import ru.dmitriylebyodkin.shoplist.models.UnitModel;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
-import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
+import ru.dmitriylebyodkin.shoplist.room.data.Unit;
 import ru.dmitriylebyodkin.shoplist.views.InfoView;
 
 public class IItemAdapter extends RecyclerView.Adapter<IItemAdapter.ViewHolder> {
@@ -49,12 +44,14 @@ public class IItemAdapter extends RecyclerView.Adapter<IItemAdapter.ViewHolder> 
     private int leftItems;
     private boolean isCompleted;
     private InputMethodManager inputMethodManager;
+    private List<Unit> unitList;
 
-    public IItemAdapter(Context context, List<IItem> listItems, List<Product> listProducts, boolean isCompleted) {
+    public IItemAdapter(Context context, List<IItem> listItems, List<Product> listProducts, boolean isCompleted, List<Unit> unitList) {
         this.context = context;
         this.listItems = listItems;
         this.listProducts = listProducts;
         this.isCompleted = isCompleted;
+        this.unitList = unitList;
 
         for (IItem item: listItems) {
             if (!item.isBought()) {
@@ -236,8 +233,16 @@ public class IItemAdapter extends RecyclerView.Adapter<IItemAdapter.ViewHolder> 
         }
 
         if (product != null) {
+            String unitTitle = "";
+
+            for (Unit unit: unitList) {
+                if (unit.getId() == product.getUnit()) {
+                    unitTitle = unit.getTitle();
+                }
+            }
+
             holder.tvTitle.setText(product.getTitle());
-            holder.tvCount.setText(String.valueOf(item.getCount())+ " " + product.getUnitTitle());
+            holder.tvCount.setText(String.valueOf(item.getCount())+ " " + unitTitle);
         }
 
         String cost = String.valueOf(item.getCost());

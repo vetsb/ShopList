@@ -69,7 +69,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                 .addItem(new BottomNavigationItem(R.drawable.cart, ""))
                 .addItem(new BottomNavigationItem(R.drawable.pattern, ""))
                 .addItem(new BottomNavigationItem(R.drawable.delete_blue, ""))
-                .addItem(new BottomNavigationItem(R.drawable.settings, ""))
+//                .addItem(new BottomNavigationItem(R.drawable.settings, ""))
                 .initialise();
 
         List<Product> productList = ProductModel.getAll(this);

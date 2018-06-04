@@ -55,7 +55,7 @@ public class EditProductPresenter extends MvpPresenter<EditItemView> {
         ProductModel.update(context, product);
     }
 
-    public void insert(Context context, Product product) {
-        ProductModel.insert(context, product);
+    public long[] insert(Context context, Product product) {
+        return ProductModel.insert(context, product);
     }
 }

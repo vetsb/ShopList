@@ -19,14 +19,16 @@ import ru.dmitriylebyodkin.shoplist.room.dao.IListDao;
 import ru.dmitriylebyodkin.shoplist.room.dao.PlaceSearchDao;
 import ru.dmitriylebyodkin.shoplist.room.dao.ProductDao;
 import ru.dmitriylebyodkin.shoplist.room.dao.ShopDao;
+import ru.dmitriylebyodkin.shoplist.room.dao.UnitDao;
 import ru.dmitriylebyodkin.shoplist.room.data.Category;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
 import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.PlaceSearch;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
 import ru.dmitriylebyodkin.shoplist.room.data.Shop;
+import ru.dmitriylebyodkin.shoplist.room.data.Unit;
 
-@Database(entities = { IList.class, IItem.class, Product.class, Category.class, Shop.class, PlaceSearch.class }, version = 1, exportSchema = false)
+@Database(entities = { IList.class, IItem.class, Product.class, Category.class, Shop.class, PlaceSearch.class, Unit.class }, version = 1, exportSchema = false)
 
 @TypeConverters(RoomDb.Converter.class)
 public abstract class RoomDb extends RoomDatabase {
@@ -61,6 +63,8 @@ public abstract class RoomDb extends RoomDatabase {
     public abstract ShopDao getShopDao();
 
     public abstract PlaceSearchDao getPlaceSearchDao();
+
+    public abstract UnitDao getUnitDao();
 
     public static class Converter {
         @TypeConverter

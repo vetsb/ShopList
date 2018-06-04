@@ -48,6 +48,7 @@ import ru.dmitriylebyodkin.shoplist.models.CategoryModel;
 import ru.dmitriylebyodkin.shoplist.models.ItemModel;
 import ru.dmitriylebyodkin.shoplist.models.ListModel;
 import ru.dmitriylebyodkin.shoplist.models.ProductModel;
+import ru.dmitriylebyodkin.shoplist.models.UnitModel;
 import ru.dmitriylebyodkin.shoplist.presenters.InfoPresenter;
 import ru.dmitriylebyodkin.shoplist.room.data.Category;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
@@ -305,7 +306,7 @@ public class InfoActivity extends MvpAppCompatActivity implements InfoView {
 
     @Override
     public void initItemAdapter() {
-        adapter = new IItemAdapter(this, list.getItems(), ProductModel.getAll(this), list.getList().isCompleted());
+        adapter = new IItemAdapter(this, list.getItems(), ProductModel.getAll(this), list.getList().isCompleted(), UnitModel.getAll(this));
     }
 
     @Override

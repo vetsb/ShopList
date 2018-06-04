@@ -20,14 +20,17 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.dmitriylebyodkin.shoplist.R;
+import ru.dmitriylebyodkin.shoplist.models.UnitModel;
 import ru.dmitriylebyodkin.shoplist.presenters.EditProductPresenter;
 import ru.dmitriylebyodkin.shoplist.room.data.Category;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
+import ru.dmitriylebyodkin.shoplist.room.data.Unit;
 import ru.dmitriylebyodkin.shoplist.views.EditItemView;
 
 public class AddProductActivity extends MvpAppCompatActivity implements EditItemView {
@@ -77,7 +80,9 @@ public class AddProductActivity extends MvpAppCompatActivity implements EditItem
             isEdit = true;
         }
 
-        product.setCategoryId(intent.getIntExtra("category_id", 0));
+        if (product.getCategoryId() == 0) {
+            product.setCategoryId(intent.getIntExtra("category_id", product.getCategoryId()));
+        }
 
         if (isEdit) {
             title = product.getTitle() == null ? "" : product.getTitle();
@@ -119,12 +124,27 @@ public class AddProductActivity extends MvpAppCompatActivity implements EditItem
             }
         });
 
-        spinnerUnit.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Product.UNITS));
-        spinnerUnit.setSelection(product.getUnit());
+        List<String> units = new ArrayList<>();
+        List<Unit> unitList = UnitModel.getAll(this);
+        int selectionId = 0;
+        int i = 0;
+
+        for (Unit unit: unitList) {
+            units.add(unit.getTitle());
+
+            if (unit.getId() == product.getUnit()) {
+                selectionId = i;
+            }
+
+            i++;
+        }
+
+        spinnerUnit.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, units));
+        spinnerUnit.setSelection(selectionId);
         spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                product.setUnit(position);
+                product.setUnit(unitList.get(position).getId());
             }
 
             @Override
@@ -138,6 +158,8 @@ public class AddProductActivity extends MvpAppCompatActivity implements EditItem
         getSupportActionBar().setTitle("");
 
         presenter.init(this, product);
+
+        Log.d(TAG, "onCreate category id: " + product.getCategoryId());
     }
 
     @Override
@@ -186,13 +208,15 @@ public class AddProductActivity extends MvpAppCompatActivity implements EditItem
                 }
 
                 product.setTitle(etTitle.getText().toString().trim());
-                intent.putExtra("product", Parcels.wrap(product));
 
                 if (isEdit) {
-                    presenter.update(getApplicationContext(), product);
+                    presenter.update(this, product);
                 } else {
-                    presenter.insert(this, product);
+                    int id = (int) presenter.insert(this, product)[0];
+                    product.setId(id);
                 }
+
+                intent.putExtra("product", Parcels.wrap(product));
 
                 setResult(RESULT_OK, intent);
                 finish();

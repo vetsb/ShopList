@@ -37,6 +37,7 @@ public class ProductsPresenter extends MvpPresenter<ProductsView> {
         ProductModel.delete(context, product);
 
         getViewState().delete(position);
+        getViewState().showDeleteToast();
     }
 
     public void showNoItems() {

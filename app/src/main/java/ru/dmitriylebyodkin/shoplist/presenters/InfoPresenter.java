@@ -1,30 +1,29 @@
 package ru.dmitriylebyodkin.shoplist.presenters;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import ru.dmitriylebyodkin.shoplist.R;
-import ru.dmitriylebyodkin.shoplist.activities.InfoActivity;
 import ru.dmitriylebyodkin.shoplist.adapters.IItemAdapter;
 import ru.dmitriylebyodkin.shoplist.data.Section;
 import ru.dmitriylebyodkin.shoplist.models.ItemModel;
 import ru.dmitriylebyodkin.shoplist.models.ListModel;
 import ru.dmitriylebyodkin.shoplist.models.ProductModel;
+import ru.dmitriylebyodkin.shoplist.models.UnitModel;
 import ru.dmitriylebyodkin.shoplist.room.data.Category;
 import ru.dmitriylebyodkin.shoplist.room.data.IItem;
 import ru.dmitriylebyodkin.shoplist.room.data.IList;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
+import ru.dmitriylebyodkin.shoplist.room.data.Unit;
 import ru.dmitriylebyodkin.shoplist.views.InfoView;
 
 @InjectViewState
@@ -225,6 +224,8 @@ public class InfoPresenter extends MvpPresenter<InfoView> {
         List<Section> sectionList = new ArrayList<>();
         Section section;
 
+        List<Unit> unitList = UnitModel.getAll(context);
+
         for (Map.Entry<Integer, List<IItem>> entry : map.entrySet()) {
             section = new Section();
 
@@ -234,7 +235,7 @@ public class InfoPresenter extends MvpPresenter<InfoView> {
                 }
             }
 
-            section.setAdapter(new IItemAdapter(context, entry.getValue(), productList, false));
+            section.setAdapter(new IItemAdapter(context, entry.getValue(), productList, false, unitList));
             sectionList.add(section);
         }
 

@@ -22,6 +22,7 @@ import ru.dmitriylebyodkin.shoplist.views.EditItemView;
 
 @InjectViewState
 public class EditItemPresenter extends MvpPresenter<EditItemView> {
+    private static final String TAG = "myLogs";
     private List<Category> categoryList = new ArrayList<>();
     private List<String> categories = new ArrayList<>();
     private int categoryIndex = 0;
@@ -36,6 +37,8 @@ public class EditItemPresenter extends MvpPresenter<EditItemView> {
 
             categories.add(context.getString(R.string.not_selected_w));
 
+            Log.d(TAG, "init id: " + product.getCategoryId());
+
             for (Category category: categoryList) {
                 categories.add(category.getTitle());
 
@@ -45,6 +48,8 @@ public class EditItemPresenter extends MvpPresenter<EditItemView> {
 
                 index++;
             }
+
+            Log.d(TAG, "init: " + categoryIndex);
 
             if (product.getCategoryId() != 0) {
                 categoryIndex++;

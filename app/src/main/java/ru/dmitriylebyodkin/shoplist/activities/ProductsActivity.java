@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import org.parceler.Parcels;
 
@@ -16,6 +17,7 @@ import ru.dmitriylebyodkin.shoplist.room.data.Product;
 public class ProductsActivity extends AppCompatActivity {
 
     public static final int EDIT_PRODUCT_CODE = 1;
+    private static final String TAG = "myLogs";
     private ProductsFragment productsFragment;
     private FragmentManager fragmentManager;
     private Intent intent;
@@ -57,8 +59,12 @@ public class ProductsActivity extends AppCompatActivity {
                 int position = data.getIntExtra("position", -1);
                 Product product = Parcels.unwrap(data.getParcelableExtra("product"));
 
-                if (position != -1) {
-                    productsFragment.update(product, position);
+                if (product.getCategoryId() == category.getId()) {
+                    if (position != -1) {
+                        productsFragment.update(product, position);
+                    }
+                } else {
+                    productsFragment.delete(position);
                 }
             }
         }
@@ -69,5 +75,11 @@ public class ProductsActivity extends AppCompatActivity {
                 productsFragment.insert(product);
             }
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

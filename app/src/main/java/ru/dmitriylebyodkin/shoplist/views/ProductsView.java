@@ -29,4 +29,6 @@ public interface ProductsView extends MvpView {
     void showDeleteDialog(Product product, int position);
 
     void updateList();
+
+    void showDeleteToast();
 }

@@ -59,8 +59,4 @@ public class Product {
     public void setUnit(int unit) {
         this.unit = unit;
     }
-
-    public String getUnitTitle() {
-        return UNITS[this.unit];
-    }
 }

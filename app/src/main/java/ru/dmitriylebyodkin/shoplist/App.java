@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,8 +18,10 @@ import java.util.Locale;
 
 import ru.dmitriylebyodkin.shoplist.models.CategoryModel;
 import ru.dmitriylebyodkin.shoplist.models.ProductModel;
+import ru.dmitriylebyodkin.shoplist.models.UnitModel;
 import ru.dmitriylebyodkin.shoplist.room.data.Category;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
+import ru.dmitriylebyodkin.shoplist.room.data.Unit;
 
 public class App extends Application {
 
@@ -27,6 +30,7 @@ public class App extends Application {
 
     private static final String INIT_PRODUCTS_KEY = "init_products";
     private static final String INIT_CATEGORIES_KEY = "init_categories";
+    private static final String INIT_UNITS_KEY = "init_units";
     private static final String TAG = "myLogs";
 
     public static int indexOfIgnoreCase(List<String> list, String text) {
@@ -50,9 +54,30 @@ public class App extends Application {
             if (!sPref.getBoolean(INIT_PRODUCTS_KEY, false)) {
                 initProducts(activity.getApplicationContext(), sPref);
             }
+
+            if (!sPref.getBoolean(INIT_UNITS_KEY, false)) {
+                initUnits(activity.getApplicationContext(), sPref);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void initUnits(Context context, SharedPreferences sPref) throws JSONException {
+        JSONObject jsonObject = new JSONObject(loadJSONFromAsset(context, "units"));
+        JSONArray jsonArray = jsonObject.getJSONArray("items");
+
+        Unit unit;
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            unit = new Unit();
+            unit.setTitle(jsonArray.getString(i));
+            UnitModel.insert(context, unit);
+        }
+
+        SharedPreferences.Editor editor = sPref.edit();
+        editor.putBoolean(INIT_UNITS_KEY, true);
+        editor.apply();
     }
 
     public static void initProducts(Context context, SharedPreferences sPref) throws JSONException {
@@ -65,6 +90,7 @@ public class App extends Application {
             product = new Product();
             product.setTitle(jsonArray.getJSONObject(i).getString("title"));
             product.setCategoryId(jsonArray.getJSONObject(i).getInt("category_id"));
+            product.setUnit(jsonArray.getJSONObject(i).getInt("unit_id"));
             ProductModel.insert(context, product);
         }
 
