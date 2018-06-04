@@ -138,7 +138,10 @@ public class AddProductActivity extends MvpAppCompatActivity implements EditItem
             i++;
         }
 
-        spinnerUnit.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, units));
+        ArrayAdapter unitAdapter = new ArrayAdapter<>(this, R.layout.simple_list_item, units);
+        unitAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+
+        spinnerUnit.setAdapter(unitAdapter);
         spinnerUnit.setSelection(selectionId);
         spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -168,7 +171,11 @@ public class AddProductActivity extends MvpAppCompatActivity implements EditItem
     @Override
     public void setCategories(List<String> categories) {
         this.categories = categories;
-        spinnerCategory.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categories));
+
+        ArrayAdapter categoryAdapter = new ArrayAdapter<>(this, R.layout.simple_list_item, categories);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+
+        spinnerCategory.setAdapter(categoryAdapter);
     }
 
     @Override

@@ -57,4 +57,8 @@ public class ListModel {
     public static void restore(Context context, IList list) {
         getDao(context).restore(list.getId());
     }
+
+    public static List<IListWithItems> getWithItemsByShopId(Context context, int shopId) {
+        return getDao(context).getWithItemsByShopId(shopId);
+    }
 }

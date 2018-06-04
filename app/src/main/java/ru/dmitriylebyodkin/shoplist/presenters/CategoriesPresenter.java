@@ -15,7 +15,7 @@ import ru.dmitriylebyodkin.shoplist.views.CategoriesView;
 @InjectViewState
 public class CategoriesPresenter extends MvpPresenter<CategoriesView> {
     public void init(Context context) {
-        List<Category> categoryList = CategoryModel.getAll(context);
+        List<Category> categoryList = CategoryModel.getAllDesc(context);
 
         if (categoryList == null || categoryList.size() == 0) {
             getViewState().showNoItems();
@@ -53,8 +53,9 @@ public class CategoriesPresenter extends MvpPresenter<CategoriesView> {
     }
 
     public void create(Context context, Category category) {
-        CategoryModel.insert(context, category);
+        long[] id = CategoryModel.insert(context, category);
+        category.setId((int) id[0]);
 
-        getViewState().addAdapterItem(category);
+        getViewState().addAdapterItemToBegin(category);
     }
 }

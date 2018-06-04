@@ -1,17 +1,20 @@
 package ru.dmitriylebyodkin.shoplist.activities;
 
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -127,6 +130,11 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditItemVi
             etCount.setSelection(String.valueOf(count).length());
         }
         etCount.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                Log.d(TAG, "onCreate: 12332");
+                etCount.setSelection(0, etCount.getText().toString().length());
+            }
+
             if (!hasFocus && etCount.getText().toString().trim().equals("")) {
                 etCount.setText(String.valueOf(1));
             }
@@ -168,7 +176,10 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditItemVi
             i++;
         }
 
-        spinnerUnit.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, units));
+        ArrayAdapter unitAdapter = new ArrayAdapter<>(this, R.layout.simple_list_item, units);
+        unitAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+
+        spinnerUnit.setAdapter(unitAdapter);
         spinnerUnit.setSelection(selectionId);
         spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -249,7 +260,11 @@ public class EditItemActivity extends MvpAppCompatActivity implements EditItemVi
     @Override
     public void setCategories(List<String> categories) {
         this.categories = categories;
-        spinnerCategory.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categories));
+
+        ArrayAdapter categoryAdapter = new ArrayAdapter<>(this, R.layout.simple_list_item, categories);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+
+        spinnerCategory.setAdapter(categoryAdapter);
     }
 
     @Override

@@ -15,10 +15,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import ru.dmitriylebyodkin.shoplist.App;
+import ru.dmitriylebyodkin.shoplist.models.ItemModel;
 import ru.dmitriylebyodkin.shoplist.models.ListModel;
 import ru.dmitriylebyodkin.shoplist.models.PlaceSearchModel;
 import ru.dmitriylebyodkin.shoplist.models.ShopModel;
+import ru.dmitriylebyodkin.shoplist.room.data.IItem;
 import ru.dmitriylebyodkin.shoplist.room.data.IList;
+import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
 import ru.dmitriylebyodkin.shoplist.room.data.PlaceSearch;
 import ru.dmitriylebyodkin.shoplist.room.data.Shop;
 import ru.dmitriylebyodkin.shoplist.services.Data.GoogleLocation;
@@ -31,7 +34,7 @@ import ru.dmitriylebyodkin.shoplist.views.AddShopView;
 public class AddShopPresenter extends MvpPresenter<AddShopView> {
     String pageToken = "";
 
-    public void init(Context context, int shopId) {
+    public void init(Context context, int shopId, List<IItem> itemList) {
         getViewState().initList();
 
         /* сделать сортировку по рейтингу */
@@ -122,7 +125,36 @@ public class AddShopPresenter extends MvpPresenter<AddShopView> {
                     /**
                      * Финальный список
                      */
-                    getViewState().addAllToAdapter(ShopModel.getBySearchId(context, placeSearchId));
+
+                    List<Shop> shopList = ShopModel.getBySearchId(context, placeSearchId);
+//                    List<Integer> costs = new ArrayList<>();
+//                    List<Integer> productIds = new ArrayList<>();
+//
+//                    for (IItem item: itemList) {
+//                        productIds.add(item.getProductId());
+//                    }
+//
+//                    float cost, minCost;
+//
+//                    for (Shop shop: shopList) {
+//                        List<IListWithItems> list = ListModel.getWithItemsByShopId(context, shop.getId());
+//                        cost = 0;
+//
+//                        for (IListWithItems iListWithItems: list) {
+//                            minCost = 0;
+//
+//                            for (IItem item: iListWithItems.getItems()) {
+//                                if (productIds.contains(item.getProductId()) && (item.getCost() < minCost || minCost == 0)) {
+//                                    minCost = item.getCost();
+//                                }
+//                            }
+//                        }
+////                        for (IItem item: itemList) {
+////                            List<IItem> items = ItemModel.getByShopAndProductId(shop.getId(), item.getProductId());
+////                        }
+//                    }
+
+                    getViewState().addAllToAdapter(shopList);
                     getViewState().finishAdd();
                     getViewState().hideProgressBar();
                 }

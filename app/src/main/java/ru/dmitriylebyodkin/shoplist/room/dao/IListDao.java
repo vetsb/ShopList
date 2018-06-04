@@ -60,4 +60,7 @@ public interface IListDao {
 
     @Query("UPDATE IList SET isDeleted=0 WHERE id=:id")
     void restore(int id);
+
+    @Query("SELECT * FROM IList WHERE shopId=:shopId ORDER BY id")
+    List<IListWithItems> getWithItemsByShopId(int shopId);
 }

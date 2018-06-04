@@ -10,7 +10,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +20,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,7 +28,6 @@ import butterknife.ButterKnife;
 import ru.dmitriylebyodkin.shoplist.App;
 import ru.dmitriylebyodkin.shoplist.R;
 import ru.dmitriylebyodkin.shoplist.adapters.ShopAdapter;
-import ru.dmitriylebyodkin.shoplist.models.ListModel;
 import ru.dmitriylebyodkin.shoplist.presenters.AddShopPresenter;
 import ru.dmitriylebyodkin.shoplist.room.data.IListWithItems;
 import ru.dmitriylebyodkin.shoplist.room.data.Shop;
@@ -77,7 +76,7 @@ public class AddShopActivity extends MvpAppCompatActivity implements AddShopView
                 .create();
 
         if (shopId != 0 || isLocationServicesEnabled()) {
-            presenter.init(this, shopId);
+            presenter.init(this, shopId, iListWithItems.getItems());
         } else {
             presenter.showLocationDialog();
         }
@@ -149,7 +148,7 @@ public class AddShopActivity extends MvpAppCompatActivity implements AddShopView
 
         if (shopId != 0 || isLocationServicesEnabled()) {
             if (!isFound) {
-                presenter.init(this, shopId);
+                presenter.init(this, shopId, new ArrayList<>());
             }
 
             if (alertDialog != null && alertDialog.isShowing()) {

@@ -198,4 +198,15 @@ public class CategoriesFragment extends MvpAppCompatFragment implements Categori
             presenter.hideNoItems();
         }
     }
+
+    @Override
+    public void addAdapterItemToBegin(Category category) {
+        adapter.addToBegin(category);
+
+        if (adapter.getItemCount() == 1) {
+            presenter.hideNoItems();
+        }
+
+        recyclerView.scrollToPosition(0);
+    }
 }

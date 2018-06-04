@@ -29,4 +29,7 @@ public interface CategoryDao {
 
     @Query("SELECT COUNT(*) FROM Category WHERE title LIKE '%' || :text || '%'")
     int getContainsCount(String text);
+
+    @Query("SELECT * FROM Category ORDER BY id DESC")
+    List<Category> getAllDesc();
 }

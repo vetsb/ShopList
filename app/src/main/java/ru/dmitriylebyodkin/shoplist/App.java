@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormatSymbols;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -83,12 +85,17 @@ public class App extends Application {
         JSONObject jsonObject = new JSONObject(loadJSONFromAsset(context, "products"));
         JSONArray jsonArray = jsonObject.getJSONArray("items");
 
+        int countCategories = new JSONObject(loadJSONFromAsset(context, "categories")).getJSONArray("items").length();
+
         Product product;
+        int categoryId;
 
         for (int i = 0; i < jsonArray.length(); i++) {
+            categoryId = countCategories - jsonArray.getJSONObject(i).getInt("category_id") + 1;
+
             product = new Product();
             product.setTitle(jsonArray.getJSONObject(i).getString("title"));
-            product.setCategoryId(jsonArray.getJSONObject(i).getInt("category_id"));
+            product.setCategoryId(categoryId);
             product.setUnit(jsonArray.getJSONObject(i).getInt("unit_id"));
             ProductModel.insert(context, product);
         }
@@ -106,7 +113,9 @@ public class App extends Application {
 
         for (int i = 0; i < jsonArray.length(); i++) {
             category = new Category();
+            category.setId(jsonArray.length() - i);
             category.setTitle(jsonArray.getString(i));
+
             CategoryModel.insert(context, category);
         }
 

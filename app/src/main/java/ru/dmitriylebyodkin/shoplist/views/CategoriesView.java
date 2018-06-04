@@ -29,4 +29,6 @@ public interface CategoriesView extends MvpView {
     void removeAdapterItem(int position);
 
     void addAdapterItem(Category category);
+
+    void addAdapterItemToBegin(Category category);
 }

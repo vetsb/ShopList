@@ -114,9 +114,10 @@
 
                         <ImageButton
                             android:id="@+id/btnMinus"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:src="@drawable/minus"
+                            android:background="#00000000"
                             tools:ignore="ContentDescription" />
 
                         <EditText
@@ -135,16 +136,18 @@
 
                         <ImageButton
                             android:id="@+id/btnPlus"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:src="@drawable/plus"
+                            android:background="#00000000"
                             tools:ignore="ContentDescription" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView

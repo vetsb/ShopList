@@ -36,4 +36,8 @@ public class CategoryModel {
     public static int getContainsCount(Context context, String text) {
         return getDao(context).getContainsCount(text);
     }
+
+    public static List<Category> getAllDesc(Context context) {
+        return getDao(context).getAllDesc();
+    }
 }

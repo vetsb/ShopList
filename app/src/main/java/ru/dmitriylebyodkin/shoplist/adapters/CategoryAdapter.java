@@ -73,6 +73,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         notifyItemRangeChanged(0, getItemCount());
     }
 
+    public void addToBegin(Category category) {
+        categoryList.add(0, category);
+        notifyItemInserted(0);
+        notifyItemRangeChanged(0, getItemCount());
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.container)
         LinearLayout container;
