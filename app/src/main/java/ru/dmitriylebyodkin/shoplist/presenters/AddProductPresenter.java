@@ -16,7 +16,7 @@ import ru.dmitriylebyodkin.shoplist.room.data.Product;
 import ru.dmitriylebyodkin.shoplist.views.EditItemView;
 
 @InjectViewState
-public class EditProductPresenter extends MvpPresenter<EditItemView> {
+public class AddProductPresenter extends MvpPresenter<EditItemView> {
     private List<Category> categoryList = new ArrayList<>();
     private List<String> categories = new ArrayList<>();
     private int categoryIndex = 0;
@@ -24,7 +24,7 @@ public class EditProductPresenter extends MvpPresenter<EditItemView> {
     public void init(Context context, Product product) {
         if (categories == null || categories.size() == 0) {
             if (categoryList == null || categoryList.size() == 0) {
-                categoryList = CategoryModel.getAll(context);
+                categoryList = CategoryModel.getAllDesc(context);
             }
 
             int index = 0;

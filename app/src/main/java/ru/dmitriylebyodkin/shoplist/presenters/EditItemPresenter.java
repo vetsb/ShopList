@@ -28,7 +28,7 @@ public class EditItemPresenter extends MvpPresenter<EditItemView> {
     public void init(Context context, Product product) {
         if (categories == null || categories.size() == 0) {
             if (categoryList == null || categoryList.size() == 0) {
-                categoryList = CategoryModel.getAll(context);
+                categoryList = CategoryModel.getAllDesc(context);
             }
 
             int index = 0;

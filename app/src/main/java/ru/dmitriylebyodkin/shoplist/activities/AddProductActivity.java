@@ -26,7 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.dmitriylebyodkin.shoplist.R;
 import ru.dmitriylebyodkin.shoplist.models.UnitModel;
-import ru.dmitriylebyodkin.shoplist.presenters.EditProductPresenter;
+import ru.dmitriylebyodkin.shoplist.presenters.AddProductPresenter;
 import ru.dmitriylebyodkin.shoplist.room.data.Category;
 import ru.dmitriylebyodkin.shoplist.room.data.Product;
 import ru.dmitriylebyodkin.shoplist.room.data.Unit;
@@ -36,7 +36,7 @@ public class AddProductActivity extends MvpAppCompatActivity implements EditItem
 
     private static final String TAG = "myLogs";
     @InjectPresenter
-    EditProductPresenter presenter;
+    AddProductPresenter presenter;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;

@@ -108,8 +108,9 @@ public class InfoPresenter extends MvpPresenter<InfoView> {
      * Поэтому создать IItem с данным productId.
      * Обновить у списка updatedAt.
      * Добавить в Adapter.
-     * @param list
-     * @param product
+     * @param context
+     * @param list - список, в который нужно добавить Item
+     * @param product - новый товар
      */
     public void addItem(Context context, IList list, Product product) {
         IItem item = new IItem();
@@ -130,10 +131,13 @@ public class InfoPresenter extends MvpPresenter<InfoView> {
 
     /**
      * Если передается String, значит такого товара нет, поэтому нужно сначала его создать, потом создать IItem, а потом добавить в список
-     * @param productTitle
+     * @param context
+     * @param list - список, в который нужно добавить Item
+     * @param productTitle - название нового товара
      */
     public void addItem(Context context, IList list, String productTitle) {
         Product product = new Product();
+        product.setUnit(1);
         product.setTitle(productTitle);
 
         int id = (int) ProductModel.insert(context, product)[0];
